@@ -304,66 +304,63 @@ const MonopolyBoard: React.FC = () => {
 
                         {/* Universal Card Display (Visible to All) */}
                         {gameState.currentCard && (
-                            <>
-                                {/* Global Click Dismiss Overlay */}
-                                <div
-                                    style={{
-                                        position: 'fixed',
-                                        top: 0,
-                                        left: 0,
-                                        width: '100vw',
-                                        height: '100vh',
-                                        zIndex: 99, // Below card (100) but above everything else
-                                        background: 'rgba(0,0,0,0.1)', // Slight dim confirm
-                                        cursor: 'pointer'
-                                    }}
+                            <motion.div
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="glass-panel"
+                                style={{
+                                    position: 'absolute',
+                                    top: '20%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, 0)',
+                                    width: '280px',
+                                    background: gameState.currentCard.type === 'chance' ? '#ff9f43' : '#54a0ff',
+                                    padding: '20px',
+                                    borderRadius: '12px',
+                                    border: '3px solid white',
+                                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                                    zIndex: 100,
+                                    textAlign: 'center'
+                                }}
+                            >
+                                {/* Close Button */}
+                                <button
                                     onClick={() => {
-                                        console.log('Overlay Dismiss Click');
+                                        console.log('Close button clicked');
                                         socket.emit('monopoly_dismiss_card', room.id);
                                     }}
-                                />
-
-                                <motion.div
-                                    initial={{ scale: 0, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    className="glass-panel"
                                     style={{
                                         position: 'absolute',
-                                        top: '20%',
-                                        left: '50%',
-                                        transform: 'translate(-50%, 0)', // Overridden by motion? No, x/y logic separates.
-                                        // Use explicit centering wrapper if needed, or margin.
-                                        marginLeft: '-125px', // Half width
-                                        width: '250px',
-                                        background: gameState.currentCard.type === 'chance' ? '#ff9f43' : '#54a0ff',
-                                        padding: '15px',
-                                        borderRadius: '12px',
-                                        border: '3px solid white',
-                                        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                                        zIndex: 100, // Higher than tokens
-                                        textAlign: 'center',
-                                        pointerEvents: 'auto', // Allow clicking
-                                        cursor: 'pointer'
-                                    }}
-                                    onClick={() => {
-                                        console.log('Dismissing card...');
-                                        socket.emit('monopoly_dismiss_card', room.id);
+                                        top: '8px',
+                                        right: '8px',
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        border: '2px solid white',
+                                        background: 'rgba(0,0,0,0.3)',
+                                        color: 'white',
+                                        fontSize: '1rem',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        lineHeight: 1
                                     }}
                                 >
-                                    <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                        {gameState.currentCard.type === 'chest' ? 'Wiki-pedia' : 'VC'}
-                                    </strong>
-                                    <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
-                                        {gameState.currentCard.text}
-                                    </div>
-                                    <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
-                                        (Click card to dismiss)
-                                    </div>
-                                    <div style={{ marginTop: '10px', fontSize: '0.9rem', color: 'white', fontWeight: 'bold' }}>
-                                        For: {room.players.find(p => p.id === gameState.currentCard?.ownerId)?.name}
-                                    </div>
-                                </motion.div>
-                            </>
+                                    ✕
+                                </button>
+
+                                <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                                    {gameState.currentCard.type === 'chest' ? 'Wiki-pedia' : 'VC'}
+                                </strong>
+                                <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
+                                    {gameState.currentCard.text}
+                                </div>
+                                <div style={{ marginTop: '10px', fontSize: '0.9rem', color: 'white', fontWeight: 'bold' }}>
+                                    For: {room.players.find(p => p.id === gameState.currentCard?.ownerId)?.name}
+                                </div>
+                            </motion.div>
                         )}
 
                         {/* Action Panel & Dice (Hidden for Banker AND when Card is showing) */}
