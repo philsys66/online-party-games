@@ -326,70 +326,72 @@ const MonopolyBoard: React.FC = () => {
                                     pointerEvents: 'auto', // Allow clicking
                                     cursor: 'pointer'
                                 }}
-                                onClick={() => socket.emit('monopoly_dismiss_card', room.id)}
+                                console.log('Dismissing card...');
+                        socket.emit('monopoly_dismiss_card', room.id); 
+                                }}
                             >
-                                <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                    {gameState.currentCard.type === 'chest' ? 'Wikipedia' : 'Venture Capitalist'}
-                                </strong>
-                                <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
-                                    {gameState.currentCard.text}
-                                </div>
-                                <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
-                                    (Click card to dismiss)
-                                </div>
-                                <div style={{ marginTop: '10px', fontSize: '0.9rem', color: 'white', fontWeight: 'bold' }}>
-                                    For: {room.players.find(p => p.id === gameState.currentCard?.ownerId)?.name}
-                                </div>
-                            </motion.div>
+                        <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                            {gameState.currentCard.type === 'chest' ? 'Wikipedia' : 'Venture Capitalist'}
+                        </strong>
+                        <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
+                            {gameState.currentCard.text}
+                        </div>
+                        <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
+                            (Click card to dismiss)
+                        </div>
+                        <div style={{ marginTop: '10px', fontSize: '0.9rem', color: 'white', fontWeight: 'bold' }}>
+                            For: {room.players.find(p => p.id === gameState.currentCard?.ownerId)?.name}
+                        </div>
+                    </motion.div>
                         )}
 
-                        {/* Action Panel & Dice (Hidden for Banker) */}
-                        {player.role !== 'banker' && (
-                            <>
-                                <div style={{ textAlign: 'center', marginBottom: '20px', zIndex: 10 }}>
-                                    <ActionPanel />
+                    {/* Action Panel & Dice (Hidden for Banker AND when Card is showing) */}
+                    {player.role !== 'banker' && !gameState.currentCard && (
+                        <>
+                            <div style={{ textAlign: 'center', marginBottom: '20px', zIndex: 10 }}>
+                                <ActionPanel />
 
-                                    {/* Floating Trade Button (if not active) */}
-                                    {!showTrade && !gameState.trade && (
-                                        <button
-                                            onClick={() => setShowTrade(true)}
-                                            style={{
-                                                marginTop: '10px',
-                                                background: 'rgba(255,255,255,0.1)',
-                                                border: '1px solid rgba(255,255,255,0.2)',
-                                                color: 'black',
-                                                padding: '5px 15px',
-                                                borderRadius: '20px',
-                                                cursor: 'pointer',
-                                                fontSize: '0.8rem'
-                                            }}
-                                        >
-                                            🤝 Propose Trade
-                                        </button>
-                                    )}
-                                </div>
-
-                                {/* Trade Interface Overlay */}
-                                {showTrade && (
-                                    <TradeInterface onClose={() => setShowTrade(false)} />
+                                {/* Floating Trade Button (if not active) */}
+                                {!showTrade && !gameState.trade && (
+                                    <button
+                                        onClick={() => setShowTrade(true)}
+                                        style={{
+                                            marginTop: '10px',
+                                            background: 'rgba(255,255,255,0.1)',
+                                            border: '1px solid rgba(255,255,255,0.2)',
+                                            color: 'white', // Updated to white for visibility
+                                            padding: '5px 15px',
+                                            borderRadius: '20px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.8rem'
+                                        }}
+                                    >
+                                        🤝 Propose Trade
+                                    </button>
                                 )}
+                            </div>
 
-                                {/* Dice */}
-                                <Dice
-                                    value={gameState.lastRoll || [1, 1]}
-                                    rolling={isRolling}
-                                    canRoll={isMyTurn && gameState.turnPhase === 'rolling'}
-                                    onRoll={handleRoll}
-                                />
-                            </>
-                        )}
-                    </div>
+                            {/* Trade Interface Overlay */}
+                            {showTrade && (
+                                <TradeInterface onClose={() => setShowTrade(false)} />
+                            )}
 
-                    {/* Spaces */}
-                    {MONOPOLY_BOARD.map(space => renderSpace(space))}
+                            {/* Dice */}
+                            <Dice
+                                value={gameState.lastRoll || [1, 1]}
+                                rolling={isRolling}
+                                canRoll={isMyTurn && gameState.turnPhase === 'rolling'}
+                                onRoll={handleRoll}
+                            />
+                        </>
+                    )}
                 </div>
+
+                {/* Spaces */}
+                {MONOPOLY_BOARD.map(space => renderSpace(space))}
             </div>
         </div>
+        </div >
     );
 };
 
