@@ -123,7 +123,7 @@ const Home: React.FC = () => {
                             }}
                         >
                             <div style={{ fontSize: '2.5rem', color: 'var(--color-primary)', textShadow: '0 0 10px var(--color-primary)' }}>S</div>
-                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Scattergories</h3>
+                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Word Blitz</h3>
                         </div>
 
                         <div
@@ -175,7 +175,7 @@ const Home: React.FC = () => {
                             }}
                         >
                             <div style={{ fontSize: '2rem', color: '#ef4444' }}>🏠</div>
-                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Monopoly</h3>
+                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Capitalist</h3>
                         </div>
                     </div>
 
@@ -214,7 +214,7 @@ const Home: React.FC = () => {
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button onClick={() => setMode('menu')} style={{ flex: 1, background: 'rgba(255,255,255,0.1)' }}>Back</button>
                             <button onClick={handleCreateGame} style={{ flex: 1, background: 'var(--color-primary)' }}>
-                                Start {selectedGame === 'scattergories' ? 'Scattergories' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : 'Monopoly'}
+                                Start {selectedGame === 'scattergories' ? 'Word Blitz' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : 'Capitalist'}
                             </button>
                         </div>
                     </div>
