@@ -8,10 +8,8 @@ import PUZZLES from './crosswordData';
 import { CHARADES_DATA } from './charadesData';
 import {
   initializeMonopolyGame, handleDiceRoll, purchaseProperty, endTurn, buyHouse,
-  createTradeOffer, acceptTrade, rejectTrade, declareBankruptcy, checkTurnTimeouteTradeOffer,
-  acceptTrade,
-  rejectTrade,
-  checkTurnTimeout
+  createTradeOffer, acceptTrade, rejectTrade, declareBankruptcy, checkTurnTimeout,
+  mortgageProperty, unmortgageProperty
 } from './monopolyLogic';
 import { Room, Player, GameState, GameType, GameConfig } from './types';
 
