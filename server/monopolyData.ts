@@ -75,30 +75,30 @@ export interface Card {
 }
 
 export const CHANCE_CARDS: Card[] = [
-    { text: "Advance to IPO (GO) - Collect £200M Funding", action: 'move', value: 0 },
+    { text: "Advance to IPO (GO) - Collect $200M Funding", action: 'move', value: 0 },
     { text: "Advance to YouTube (Viral Hit!)", action: 'move', value: 24 },
     { text: "Advance to Spotify (Podcast Deal)", action: 'move', value: 11 },
-    { text: "Crypto Airdrop! Collect £50M", action: 'money', value: 50 },
+    { text: "Crypto Airdrop! Collect $50M", action: 'money', value: 50 },
     { text: "SEC Investigation! Go to Jail", action: 'jail' },
-    { text: "Cloud Server Outage. Pay £15M", action: 'money', value: -15 },
+    { text: "Cloud Server Outage. Pay $15M", action: 'money', value: -15 },
     { text: "Rollback Deployment (Go back 3 spaces)", action: 'move', value: -3 },
-    { text: "Host Tech Conference. Pay each player £50M", action: 'money', value: -50 },
-    { text: "Series B Funding Secured! Collect £150M", action: 'money', value: 150 }
+    { text: "Host Tech Conference. Pay each player $50M", action: 'money', value: -50 },
+    { text: "Series B Funding Secured! Collect $150M", action: 'money', value: 150 }
 ];
 
 export const COMMUNITY_CHEST_CARDS: Card[] = [
-    { text: "Advance to IPO (GO) - Collect £200M", action: 'move', value: 0 },
-    { text: "Open Source Grant Received. Collect £200M", action: 'money', value: 200 },
-    { text: "Legal Fees for Patent Suit. Pay £50M", action: 'money', value: -50 },
-    { text: "Sold your startup shares. Collect £50M", action: 'money', value: 50 },
+    { text: "Advance to IPO (GO) - Collect $200M", action: 'move', value: 0 },
+    { text: "Open Source Grant Received. Collect $200M", action: 'money', value: 200 },
+    { text: "Legal Fees for Patent Suit. Pay $50M", action: 'money', value: -50 },
+    { text: "Sold your startup shares. Collect $50M", action: 'money', value: 50 },
     { text: "Insider Trading Caught! Go to Jail", action: 'jail' },
-    { text: "Exit Strategy executed. Receive £100M", action: 'money', value: 100 },
-    { text: "Tax Refund. Collect £20M", action: 'money', value: 20 },
-    { text: "It is your birthday. Collect £10M from every player", action: 'money', value: 10 },
-    { text: "Life Insurance Matures. Collect £100M", action: 'money', value: 100 },
-    { text: "Pay Ransomware Hackers £100M", action: 'money', value: -100 },
-    { text: "Pay Coding Bootcamp fees £50M", action: 'money', value: -50 },
-    { text: "Receive £25M Consultancy Fee", action: 'money', value: 25 },
-    { text: "Won a Hackathon! Collect £10M", action: 'money', value: 10 },
-    { text: "Inherited Bitcoin Wallet. Collect £100M", action: 'money', value: 100 }
+    { text: "Exit Strategy executed. Receive $100M", action: 'money', value: 100 },
+    { text: "Tax Refund. Collect $20M", action: 'money', value: 20 },
+    { text: "It is your birthday. Collect $10M from every player", action: 'money', value: 10 },
+    { text: "Life Insurance Matures. Collect $100M", action: 'money', value: 100 },
+    { text: "Pay Ransomware Hackers $100M", action: 'money', value: -100 },
+    { text: "Pay Coding Bootcamp fees $50M", action: 'money', value: -50 },
+    { text: "Receive $25M Consultancy Fee", action: 'money', value: 25 },
+    { text: "Won a Hackathon! Collect $10M", action: 'money', value: 10 },
+    { text: "Inherited Bitcoin Wallet. Collect $100M", action: 'money', value: 100 }
 ];
