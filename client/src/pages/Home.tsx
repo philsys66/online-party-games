@@ -214,7 +214,7 @@ const Home: React.FC = () => {
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button onClick={() => setMode('menu')} style={{ flex: 1, background: 'rgba(255,255,255,0.1)' }}>Back</button>
                             <button onClick={handleCreateGame} style={{ flex: 1, background: 'var(--color-primary)' }}>
-                                Start {selectedGame === 'scattergories' ? 'Word Blitz' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : 'Capitalist'}
+                                Start {selectedGame === 'scattergories' ? 'Word Blitz' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : 'Tech Capitalist'}
                             </button>
                         </div>
                     </div>
