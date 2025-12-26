@@ -69,7 +69,7 @@ const Home: React.FC = () => {
                 className="neon-text"
                 style={{ fontSize: '4rem', marginBottom: '40px', textAlign: 'center' }}
             >
-                AYTONS<br /><span style={{ fontSize: '2rem', letterSpacing: '10px' }}>ARCADE</span>
+                AYTON'S<br /><span style={{ fontSize: '2rem', letterSpacing: '10px' }}>ARCADE</span>
             </motion.h1>
 
             {error && (
