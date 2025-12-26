@@ -323,14 +323,19 @@ const MonopolyBoard: React.FC = () => {
                                     boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
                                     zIndex: 100, // Higher than tokens
                                     textAlign: 'center',
-                                    pointerEvents: 'none' // Don't block clicks? Or maybe blocking is good?
+                                    pointerEvents: 'auto', // Allow clicking
+                                    cursor: 'pointer'
                                 }}
+                                onClick={() => socket.emit('monopoly_dismiss_card', room.id)}
                             >
                                 <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                    {gameState.currentCard.type === 'chest' ? 'Community Chest' : 'Chance'}
+                                    {gameState.currentCard.type === 'chest' ? 'Wikipedia' : 'Venture Capitalist'}
                                 </strong>
                                 <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
                                     {gameState.currentCard.text}
+                                </div>
+                                <div style={{ marginTop: '10px', fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
+                                    (Click card to dismiss)
                                 </div>
                                 <div style={{ marginTop: '10px', fontSize: '0.9rem', color: 'white', fontWeight: 'bold' }}>
                                     For: {room.players.find(p => p.id === gameState.currentCard?.ownerId)?.name}
