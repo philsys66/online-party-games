@@ -59,30 +59,31 @@ const MonopolyBoard: React.FC = () => {
         const playersHere = Object.values(gameState.players || {}).filter(p => p.position === space.id);
         const propState = gameState.properties?.[space.id];
 
-        let backgroundColor = '#f0f0f0'; // Default board color
+        let backgroundColor = 'rgba(16, 20, 30, 0.9)'; // Dark glass default
+        let borderColor = 'rgba(0, 240, 255, 0.3)'; // Cyan border default
         let groupColor = 'transparent';
 
-        // Color Logic
+        // Neon Color Logic
         if (space.group) {
             switch (space.group) {
-                case 'brown': groupColor = '#8B4513'; break;
-                case 'lightblue': groupColor = '#87CEEB'; break;
-                case 'pink': groupColor = '#FF69B4'; break;
-                case 'orange': groupColor = '#FFA500'; break;
-                case 'red': groupColor = '#FF0000'; break;
-                case 'yellow': groupColor = '#FFD700'; break;
-                case 'green': groupColor = '#008000'; break;
-                case 'darkblue': groupColor = '#00008B'; break;
-                case 'utility': backgroundColor = '#f0f0f0'; break;
-                case 'railroad': backgroundColor = '#f0f0f0'; break;
+                case 'brown': groupColor = '#8d6e63'; break; // Muted Brown -> Bronze? Let's keep distinct but maybe glowy
+                case 'lightblue': groupColor = '#29b6f6'; break; // Bright Cyan
+                case 'pink': groupColor = '#ec407a'; break; // Neon Pink
+                case 'orange': groupColor = '#ff9800'; break; // Neon Orange
+                case 'red': groupColor = '#ff1744'; break; // Neon Red
+                case 'yellow': groupColor = '#ffea00'; break; // Neon Yellow
+                case 'green': groupColor = '#00e676'; break; // Neon Green
+                case 'darkblue': groupColor = '#2979ff'; break; // Neon Blue
+                case 'utility': backgroundColor = 'rgba(255, 255, 255, 0.05)'; break;
+                case 'railroad': backgroundColor = 'rgba(0, 0, 0, 0.3)'; break;
             }
         }
 
-        // Special Corners
-        if (space.id === 0) backgroundColor = '#cceeff'; // GO
-        if (space.id === 10) backgroundColor = '#ffcccc'; // Jail
-        if (space.id === 20) backgroundColor = '#ffffcc'; // Free Parking
-        if (space.id === 30) backgroundColor = '#ffebcc'; // Go To
+        // Special Corners - Dark Neon Style
+        if (space.id === 0) backgroundColor = 'rgba(0, 230, 118, 0.2)'; // GO (Green tint)
+        if (space.id === 10) backgroundColor = 'rgba(255, 23, 68, 0.2)'; // Jail (Red tint)
+        if (space.id === 20) backgroundColor = 'rgba(255, 234, 0, 0.15)'; // Free Parking (Yellow tint)
+        if (space.id === 30) backgroundColor = 'rgba(100, 100, 255, 0.2)'; // Go To (Blue tint)
 
         return (
             <div
@@ -90,19 +91,20 @@ const MonopolyBoard: React.FC = () => {
                 style={{
                     gridColumn: pos.col,
                     gridRow: pos.row,
-                    border: '1px solid #333',
+                    border: `1px solid ${borderColor}`,
                     background: backgroundColor,
                     position: 'relative',
                     display: 'flex',
                     flexDirection: 'column',
                     fontSize: '0.6rem',
-                    color: 'black',
-                    overflow: 'hidden'
+                    color: '#e0e0e0',
+                    overflow: 'hidden',
+                    boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)'
                 }}
             >
                 {/* Color Bar */}
                 {space.type === 'property' && (
-                    <div style={{ height: '20%', background: groupColor, borderBottom: '1px solid #333' }}></div>
+                    <div style={{ height: '20%', background: groupColor, borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: `0 0 10px ${groupColor}` }}></div>
                 )}
 
                 {/* Content */}
@@ -130,10 +132,10 @@ const MonopolyBoard: React.FC = () => {
                     return (
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2px' }}>
                             <div style={backgroundStyle}>
-                                <span style={{ fontWeight: 'bold', fontSize: '0.8rem', display: 'block' }}>{space.name}</span>
+                                <span style={{ fontWeight: 'bold', fontSize: '0.7rem', display: 'block', textShadow: '0 1px 2px black', fontFamily: 'monospace' }}>{space.name}</span>
                             </div>
                             {/* Price shows below name label, only if not owned? Or always? Usually price is obscured by house tokens physically. Let's keep it. */}
-                            {!propState?.ownerId && space.price && <span style={{ fontSize: '0.7rem' }}>${space.price}M</span>}
+                            {!propState?.ownerId && space.price && <span style={{ fontSize: '0.65rem', color: '#00f0ff', marginTop: '2px' }}>${space.price}M</span>}
 
                             {/* Ownership/Houses */}
                             {propState?.ownerId && (
@@ -196,10 +198,10 @@ const MonopolyBoard: React.FC = () => {
                                     width: '30px',
                                     height: '30px',
                                     borderRadius: '50%',
-                                    border: `3px solid ${borderColor}`,
-                                    background: 'white',
+                                    border: `2px solid ${borderColor}`,
+                                    background: 'black', // Dark background for avatar
                                     zIndex: 20,
-                                    boxShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                                    boxShadow: `0 0 10px ${borderColor}` // Glow effect matches player color
                                 }}
                                 title={pInfo?.name}
                             />
@@ -263,24 +265,36 @@ const MonopolyBoard: React.FC = () => {
                     gridTemplateRows: gridTemplate,
                     width: boardSize,
                     height: boardSize,
-                    background: '#dde6ed',
-                    border: '5px solid black',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-                    transition: 'all 0.3s ease' // Smooth transition on resize
+                    background: '#090a0f', // Deep dark tech background
+                    border: '5px solid #00f0ff', // Cyan Neon Border
+                    boxShadow: '0 0 50px rgba(0, 240, 255, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.8)',
+                    transition: 'all 0.3s ease',
+                    borderRadius: '15px'
                 }}>
                     {/* Center Area */}
                     <div style={{
                         gridColumn: '2 / 11',
                         gridRow: '2 / 11',
-                        background: '#eef2f5',
+                        background: 'radial-gradient(circle at center, #1a1f35 0%, #0b0d14 100%)',
+                        border: '1px solid rgba(0, 240, 255, 0.3)',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
                         alignItems: 'center',
-                        position: 'relative'
+                        position: 'relative',
+                        boxShadow: 'inset 0 0 100px rgba(0,0,0,0.8)'
                     }}>
-                        <h1 style={{ fontSize: '4rem', color: '#e74c3c', transform: 'rotate(-45deg)', opacity: 0.1, pointerEvents: 'none', position: 'absolute' }}>
-                            {player.role === 'banker' ? 'BANKER MODE' : 'TECH CAPITALIST'}
+                        <h1 style={{
+                            fontSize: '4rem',
+                            color: 'rgba(0, 240, 255, 0.05)',
+                            transform: 'rotate(-45deg)',
+                            pointerEvents: 'none',
+                            position: 'absolute',
+                            fontFamily: 'monospace',
+                            letterSpacing: '10px',
+                            whiteSpace: 'nowrap'
+                        }}>
+                            {player.role === 'banker' ? 'BANKER_MODE' : 'TECH_CAPITALIST'}
                         </h1>
 
                         {/* Banker Dashboard (Center View) */}
