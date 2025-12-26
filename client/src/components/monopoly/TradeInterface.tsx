@@ -43,14 +43,14 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                     <div style={{ width: '45%' }}>
                         <h4 style={{ borderBottom: '1px solid #555' }}>{proposerName} Offers:</h4>
-                        <div>Cash: £{activeTrade.offer.cash}</div>
+                        <div>Cash: ${activeTrade.offer.cash}M</div>
                         {activeTrade.offer.properties.map(pid => (
                             <div key={pid} style={{ fontSize: '0.9rem' }}>• {MONOPOLY_BOARD[pid].name}</div>
                         ))}
                     </div>
                     <div style={{ width: '45%' }}>
                         <h4 style={{ borderBottom: '1px solid #555' }}>{receiverName} Gives:</h4>
-                        <div>Cash: £{activeTrade.request.cash}</div>
+                        <div>Cash: ${activeTrade.request.cash}M</div>
                         {activeTrade.request.properties.map(pid => (
                             <div key={pid} style={{ fontSize: '0.9rem' }}>• {MONOPOLY_BOARD[pid].name}</div>
                         ))}
@@ -138,7 +138,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         <div style={{ flex: '1 1 200px', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '5px' }}>
                             <h4>You Offer:</h4>
                             <div style={{ marginBottom: '10px' }}>
-                                <label>Cash: £</label>
+                                <label>Cash: $</label>
                                 <input
                                     type="number"
                                     value={offerCash}
@@ -146,7 +146,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                     max={myState.cash}
                                     style={{ width: '80px', background: '#34495e', border: '1px solid #555', color: 'white', padding: '4px' }}
                                 />
-                                <span style={{ fontSize: '0.8rem', marginLeft: '5px' }}>(Max: £{myState.cash})</span>
+                                <span style={{ fontSize: '0.8rem', marginLeft: '5px' }}>(Max: ${myState.cash}M)</span>
                             </div>
                             <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
                                 {myState.properties.map(pid => (
@@ -174,7 +174,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                 return (
                                     <>
                                         <div style={{ marginBottom: '10px' }}>
-                                            <label>Cash: £</label>
+                                            <label>Cash: $</label>
                                             <input
                                                 type="number"
                                                 value={requestCash}
@@ -182,7 +182,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                                 max={targetState.cash}
                                                 style={{ width: '80px', background: '#34495e', border: '1px solid #555', color: 'white', padding: '4px' }}
                                             />
-                                            <span style={{ fontSize: '0.8rem', marginLeft: '5px' }}>(Max: £{targetState.cash})</span>
+                                            <span style={{ fontSize: '0.8rem', marginLeft: '5px' }}>(Max: ${targetState.cash}M)</span>
                                         </div>
                                         <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
                                             {targetState.properties.map(pid => (

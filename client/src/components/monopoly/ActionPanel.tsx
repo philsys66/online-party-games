@@ -53,7 +53,7 @@ const ActionPanel: React.FC = () => {
 
             {canBuy && (
                 <div style={{ marginBottom: '15px' }}>
-                    <p style={{ color: '#666' }}>Price: £{currentSpace.price}</p>
+                    <p style={{ color: '#666' }}>Price: ${currentSpace.price}M</p>
                     <button
                         onClick={() => socket.emit('monopoly_buy_property', room.id)}
                         style={{

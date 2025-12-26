@@ -142,9 +142,9 @@ const BankerHUD: React.FC = () => {
                                         color: 'rgba(0,0,0,0.7)',
                                         fontSize: '0.75rem',
                                         fontWeight: 'bold'
-                                    }} title={`Cash: £${p.cash}`}>
+                                    }} title={`Cash: $${p.cash}M`}>
                                         {/* Show Cash Value INSIDE if fits */}
-                                        {cashHeight > 15 && `£${p.cash}`}
+                                        {cashHeight > 15 && `$${p.cash}M`}
                                     </div>
 
                                     {/* Asset Part (Count) - Semi-transparent */}

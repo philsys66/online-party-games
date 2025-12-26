@@ -133,7 +133,7 @@ const MonopolyBoard: React.FC = () => {
                                 <span style={{ fontWeight: 'bold', fontSize: '0.8rem', display: 'block' }}>{space.name}</span>
                             </div>
                             {/* Price shows below name label, only if not owned? Or always? Usually price is obscured by house tokens physically. Let's keep it. */}
-                            {!propState?.ownerId && space.price && <span style={{ fontSize: '0.7rem' }}>£{space.price}</span>}
+                            {!propState?.ownerId && space.price && <span style={{ fontSize: '0.7rem' }}>${space.price}M</span>}
 
                             {/* Ownership/Houses */}
                             {propState?.ownerId && (

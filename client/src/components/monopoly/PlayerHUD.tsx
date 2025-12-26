@@ -97,7 +97,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <span style={{ fontSize: '1.2rem', color: 'var(--color-text-dim)' }}>CASH</span>
-                <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4ade80' }}>£{myState.cash}</span>
+                <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4ade80' }}>${myState.cash}M</span>
             </div>
 
             <div style={{ marginBottom: '20px' }}>
@@ -206,7 +206,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                                 }}
                                 style={{ padding: '8px', background: '#2ecc71', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
                             >
-                                Unmortgage (-£{Math.floor((MONOPOLY_BOARD[selectedPropertyId].mortgageValue || 0) * 1.1)})
+                                Unmortgage (-${Math.floor((MONOPOLY_BOARD[selectedPropertyId].mortgageValue || 0) * 1.1)}M)
                             </button>
                         ) : (
                             <>
@@ -217,7 +217,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                                     }}
                                     style={{ padding: '8px', background: '#e74c3c', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
                                 >
-                                    Mortgage (+£{MONOPOLY_BOARD[selectedPropertyId].mortgageValue})
+                                    Mortgage (+${MONOPOLY_BOARD[selectedPropertyId].mortgageValue}M)
                                 </button>
 
                                 {MONOPOLY_BOARD[selectedPropertyId].houseCost && (
@@ -227,7 +227,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                                         }}
                                         style={{ padding: '8px', background: '#3498db', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
                                     >
-                                        Buy House (-£{MONOPOLY_BOARD[selectedPropertyId].houseCost})
+                                        Buy House (-${MONOPOLY_BOARD[selectedPropertyId].houseCost}M)
                                     </button>
                                 )}
                             </>
