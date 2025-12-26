@@ -175,7 +175,7 @@ const Home: React.FC = () => {
                             }}
                         >
                             <div style={{ fontSize: '2rem', color: '#ef4444' }}>🏠</div>
-                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Capitalist</h3>
+                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Tech Capitalist</h3>
                         </div>
                     </div>
 

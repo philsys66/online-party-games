@@ -131,7 +131,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
             </div>
 
             <div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)', display: 'block', marginBottom: '10px' }}>PROPERTIES (Click to Manage)</span>
+                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)', display: 'block', marginBottom: '10px' }}>COMPANIES (Click to Manage)</span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                     {myState.properties.map(id => {
                         const space = MONOPOLY_BOARD.find(s => s.id === id);
@@ -174,7 +174,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                         );
                     })}
                     {myState.properties.length === 0 && (
-                        <span style={{ fontStyle: 'italic', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>No properties owned</span>
+                        <span style={{ fontStyle: 'italic', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>No companies owned</span>
                     )}
                 </div>
             </div>

@@ -161,7 +161,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                         </label>
                                     </div>
                                 ))}
-                                {myState.properties.length === 0 && <span style={{ fontStyle: 'italic', color: '#aaa' }}>No properties</span>}
+                                {myState.properties.length === 0 && <span style={{ fontStyle: 'italic', color: '#aaa' }}>No companies</span>}
                             </div>
                         </div>
 
@@ -197,7 +197,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                                                     </label>
                                                 </div>
                                             ))}
-                                            {targetState.properties.length === 0 && <span style={{ fontStyle: 'italic', color: '#aaa' }}>No properties</span>}
+                                            {targetState.properties.length === 0 && <span style={{ fontStyle: 'italic', color: '#aaa' }}>No companies</span>}
                                         </div>
                                     </>
                                 );

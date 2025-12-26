@@ -160,7 +160,7 @@ const BankerHUD: React.FC = () => {
                                         fontSize: '0.75rem',
                                         fontWeight: 'bold',
                                         textShadow: '0 1px 2px black'
-                                    }} title={`Properties: ${propCount}`}>
+                                    }} title={`Companies: ${propCount}`}>
                                         {/* Show Count INSIDE if fits */}
                                         {propHeight > 10 && propCount}
                                     </div>

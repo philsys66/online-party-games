@@ -280,7 +280,7 @@ const MonopolyBoard: React.FC = () => {
                         position: 'relative'
                     }}>
                         <h1 style={{ fontSize: '4rem', color: '#e74c3c', transform: 'rotate(-45deg)', opacity: 0.1, pointerEvents: 'none', position: 'absolute' }}>
-                            {player.role === 'banker' ? 'BANKER MODE' : 'CAPITALIST'}
+                            {player.role === 'banker' ? 'BANKER MODE' : 'TECH CAPITALIST'}
                         </h1>
 
                         {/* Banker Dashboard (Center View) */}

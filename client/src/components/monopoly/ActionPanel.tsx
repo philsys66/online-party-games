@@ -67,14 +67,14 @@ const ActionPanel: React.FC = () => {
                             width: '100%'
                         }}
                     >
-                        Buy Property
+                        Buy Company
                     </button>
                 </div>
             )}
 
             {isOwner && (
                 <div style={{ color: '#27ae60', fontWeight: 'bold', marginBottom: '10px' }}>
-                    You own this property.
+                    You own this company.
                 </div>
             )}
 
