@@ -7,15 +7,8 @@ import { BRITISH_CATEGORIES } from './britishCategories';
 import PUZZLES from './crosswordData';
 import { CHARADES_DATA } from './charadesData';
 import {
-  initializeMonopolyGame,
-  handleDiceRoll,
-  purchaseProperty,
-  endTurn,
-  mortgageProperty,
-  unmortgageProperty,
-  buyHouse,
-  declareBankruptcy,
-  createTradeOffer,
+  initializeMonopolyGame, handleDiceRoll, purchaseProperty, endTurn, buyHouse,
+  createTradeOffer, acceptTrade, rejectTrade, declareBankruptcy, checkTurnTimeouteTradeOffer,
   acceptTrade,
   rejectTrade,
   checkTurnTimeout
@@ -746,6 +739,8 @@ io.on('connection', (socket) => {
     const room = rooms[roomCode];
     if (room && room.gameState.monopoly) {
       room.gameState.monopoly.currentCard = null;
+      // User Request: "Finish the go" when card is dismissed
+      endTurn(room);
       io.to(roomCode).emit('room_update', room);
     }
   });
