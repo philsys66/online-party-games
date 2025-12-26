@@ -31,6 +31,16 @@ const Lobby: React.FC = () => {
         <div className="container column" style={{ paddingTop: '40px' }}>
             <header style={{ textAlign: 'center', marginBottom: '20px', position: 'relative' }}>
                 <GameMenu />
+                <img
+                    src="/favicon.png"
+                    alt="Ayton's Arcade"
+                    style={{
+                        width: '60px',
+                        height: '60px',
+                        marginBottom: '10px',
+                        filter: 'drop-shadow(0 0 10px var(--color-primary))'
+                    }}
+                />
                 <h3 style={{ color: 'var(--color-text-dim)' }}>Room Code</h3>
                 <h1 style={{ fontSize: '3rem', letterSpacing: '8px', color: 'var(--color-accent)' }}>
                     {room.id}
