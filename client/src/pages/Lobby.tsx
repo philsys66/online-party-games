@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import GameMenu from '../components/GameMenu';
 
 const Lobby: React.FC = () => {
-    const { room, startGame, player, updateSettings, error } = useGame();
+    const { room, startGame, player, updateSettings, error, isConnected } = useGame();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,6 +31,18 @@ const Lobby: React.FC = () => {
         <div className="container column" style={{ paddingTop: '40px' }}>
             <header style={{ textAlign: 'center', marginBottom: '20px', position: 'relative' }}>
                 <GameMenu />
+                <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <div style={{
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        background: isConnected ? '#4ade80' : '#ef4444',
+                        boxShadow: isConnected ? '0 0 5px #4ade80' : 'none'
+                    }} />
+                    <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+                        {isConnected ? 'Online' : 'Disconnected'}
+                    </span>
+                </div>
                 <img
                     src="/favicon.png"
                     alt="Ayton's Arcade"
