@@ -742,6 +742,14 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('monopoly_dismiss_card', (roomCode: string) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.monopoly) {
+      room.gameState.monopoly.currentCard = null;
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });
