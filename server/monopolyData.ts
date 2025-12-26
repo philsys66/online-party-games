@@ -13,7 +13,7 @@ export interface BoardSpace {
 
 export const MONOPOLY_BOARD: BoardSpace[] = [
     { id: 0, name: "IPO (GO)", type: 'start' },
-    // Bottom Row (0-10)
+    // Bottom Row (0-10): WAS Brown/LightBlue -> NOW Green/DarkBlue (Short Names)
     { id: 1, name: "Stripe", type: 'property', price: 60, rent: [2, 10, 30, 90, 160, 250], group: 'brown', houseCost: 50, mortgageValue: 30 },
     { id: 2, name: "Wiki-pedia", type: 'action' },
     { id: 3, name: "SpaceX", type: 'property', price: 60, rent: [4, 20, 60, 180, 320, 450], group: 'brown', houseCost: 50, mortgageValue: 30 },
@@ -25,7 +25,7 @@ export const MONOPOLY_BOARD: BoardSpace[] = [
     { id: 9, name: "Apple", type: 'property', price: 120, rent: [8, 40, 100, 300, 450, 600], group: 'lightblue', houseCost: 50, mortgageValue: 60 },
     { id: 10, name: "Jail", type: 'jail' },
 
-    // Left Column (11-19)
+    // Left Column (11-19): WAS Pink/Orange -> NOW Red/Yellow (Long Names)
     { id: 11, name: "TikTok", type: 'property', price: 140, rent: [10, 50, 150, 450, 625, 750], group: 'pink', houseCost: 100, mortgageValue: 70 },
     { id: 12, name: "Starlink", type: 'utility', price: 150, group: 'utility', mortgageValue: 75 },
     { id: 13, name: "Instagram", type: 'property', price: 140, rent: [10, 50, 150, 450, 625, 750], group: 'pink', houseCost: 100, mortgageValue: 70 },
@@ -36,7 +36,7 @@ export const MONOPOLY_BOARD: BoardSpace[] = [
     { id: 18, name: "LinkedIn", type: 'property', price: 180, rent: [14, 70, 200, 550, 750, 950], group: 'orange', houseCost: 100, mortgageValue: 90 },
     { id: 19, name: "Discord", type: 'property', price: 200, rent: [16, 80, 220, 600, 800, 1000], group: 'orange', houseCost: 100, mortgageValue: 100 },
 
-    // Top Row (20-30)
+    // Top Row (20-30): WAS Red/Yellow -> NOW Pink/Orange (Short Names)
     { id: 20, name: "Server Crash (Free Parking)", type: 'parking' },
     { id: 21, name: "Spotify", type: 'property', price: 220, rent: [18, 90, 250, 700, 875, 1050], group: 'red', houseCost: 150, mortgageValue: 110 },
     { id: 22, name: "VC", type: 'action' },
@@ -49,7 +49,7 @@ export const MONOPOLY_BOARD: BoardSpace[] = [
     { id: 29, name: "WeWork", type: 'property', price: 280, rent: [24, 120, 360, 850, 1025, 1200], group: 'yellow', houseCost: 150, mortgageValue: 140 },
     { id: 30, name: "Go To Jail", type: 'gotojail' },
 
-    // Right Column (31-39)
+    // Right Column (31-39): WAS Green/DarkBlue -> NOW Brown/LightBlue (Longer Names)
     { id: 31, name: "Substack", type: 'property', price: 300, rent: [26, 130, 390, 900, 1100, 1275], group: 'green', houseCost: 200, mortgageValue: 150 },
     { id: 32, name: "Patreon", type: 'property', price: 300, rent: [26, 130, 390, 900, 1100, 1275], group: 'green', houseCost: 200, mortgageValue: 150 },
     { id: 33, name: "Wikipedia", type: 'action' },
@@ -81,29 +81,34 @@ export interface Card {
     subType?: 'utility' | 'railroad'; // For move_nearest
 }
 
+// VC Cards - Venture Capital themed actions
 export const CHANCE_CARDS: Card[] = [
-    { text: "Viral Tweet creates hype! Advance to X (Twitter).", action: 'move', value: 16 }, // X is 16
-    { text: "Seed Round Funding secured. Collect $200M.", action: 'move', value: 0 }, // Advance to GO
-    { text: "Crypto crash! Pay each player $50M.", action: 'money', value: -50 },
-    { text: "Acqui-hired by a Big Tech Giant. Advance to Apple.", action: 'move', value: 9 }, // Apple is 9
-    { text: "SEC Investigation for Fraud. Go to Jail!", action: 'jail' },
-    { text: "Server Outage disrupts service. Go back 3 spaces.", action: 'move', value: -3 },
-    { text: "Series A Funding Round! Collect $150M.", action: 'money', value: 150 },
-    { text: "Host a Tech Conference. Pay $15M for catering.", action: 'money', value: -15 },
-    { text: "AI Breakthrough! Capitalize on the hype. Collect $50M.", action: 'money', value: 50 },
-    { text: "Your startup is trending on Product Hunt. Collect $25M.", action: 'money', value: 25 },
-    { text: "CEO Scandal leaked to press. Pay $100M PR fees.", action: 'money', value: -100 }
+    { text: "Pitch Deck Approved! Series A Funding: Collect $100M", action: 'money', value: 100 },
+    { text: "Lead Investor Pulled Out. Pivot required. Pay $50M", action: 'money', value: -50 },
+    { text: "Your AI startup goes viral! Advance to IPO. Collect $200M", action: 'move', value: 0 },
+    { text: "Unicorn Status Achieved! 🦄 Collect $150M", action: 'money', value: 150 },
+    { text: "Due Diligence Failed. SEC Investigation. Go to Jail.", action: 'jail' },
+    { text: "Acqui-hire Offer! Collect $75M and move to Apple.", action: 'move', value: 9 },
+    { text: "Market Correction. Your valuation drops. Pay $100M", action: 'money', value: -100 },
+    { text: "Bridge Round Secured. Collect $50M", action: 'money', value: 50 },
+    { text: "Keynote Speaker Fee. Pay each player $25M", action: 'money', value: -25 },
+    { text: "SPAC Merger Approved! Advance to Stripe.", action: 'move', value: 1 },
+    { text: "Term Sheet Signed! Collect $200M", action: 'money', value: 200 },
+    { text: "Founder Dispute. Legal fees. Pay $30M", action: 'money', value: -30 }
 ];
 
+// Wikipedia Cards - Knowledge/Community themed actions
 export const COMMUNITY_CHEST_CARDS: Card[] = [
-    { text: "Open Source Grant Received. Collect $100M.", action: 'money', value: 100 },
-    { text: "Won an Edit War on a controversial page. Collect $20M.", action: 'money', value: 20 },
-    { text: "Server hosting donation. Pay $50M.", action: 'money', value: -50 },
-    { text: "Fixed a critical bug. Collect $10M from every player.", action: 'money', value: 10 },
-    { text: "Citation Needed? No, you have sources. Get Out of Jail Free.", action: 'money', value: 100 }, // Fallback to money if no item logic
-    { text: " Crowdfunding Campaign Fully Funded! Collect $200M.", action: 'money', value: 200 },
-    { text: "Wrote documentation for the team. Collect $50M.", action: 'money', value: 50 },
-    { text: "Copyright Strike on your content. Pay $100M.", action: 'money', value: -100 },
-    { text: "Consultancy Gig. Receive $25M.", action: 'money', value: 25 },
-    { text: "Sold your old hardware setup. Collect $10M.", action: 'money', value: 10 }
+    { text: "[Citation Needed] Your edit was reverted. Lose a turn.", action: 'money', value: 0 },
+    { text: "Featured Article Recognition! Community donation: Collect $100M", action: 'money', value: 100 },
+    { text: "Wikimedia Foundation Grant. Collect $150M", action: 'money', value: 150 },
+    { text: "Edit War! Mediation fees. Pay $40M", action: 'money', value: -40 },
+    { text: "Barnstar Award! Your contributions recognized. Collect $50M", action: 'money', value: 50 },
+    { text: "Copyright Violation. Page deleted. Pay $75M", action: 'money', value: -75 },
+    { text: "Vandalism Detected! Admin blocked you. Go to Jail.", action: 'jail' },
+    { text: "Good Article Status! Collect $80M", action: 'money', value: 80 },
+    { text: "Server Maintenance Fund. Donate $25M", action: 'money', value: -25 },
+    { text: "Article translated to 50 languages! Collect $120M", action: 'money', value: 120 },
+    { text: "Your knowledge helped millions! Advance to IPO. Collect $200M", action: 'move', value: 0 },
+    { text: "You became a Moderator! Collect $10M from each player", action: 'money', value: 10 }
 ];
