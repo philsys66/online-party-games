@@ -1,0 +1,122 @@
+export interface Player {
+    id: string; // Socket ID (ephemeral)
+    userId?: string; // Persistent UUID
+    name: string;
+    avatar?: string;
+    score: number;
+    role?: 'player' | 'banker';
+}
+
+export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly';
+
+export interface Cell {
+    row: number;
+    col: number;
+    value: string;
+    isBlack: boolean;
+    number?: number;
+    clueId?: string; // e.g. "1-across"
+    locked?: boolean;
+    ownerId?: string; // Player who solved it
+}
+
+export interface GameState {
+    status: 'lobby' | 'playing' | 'voting' | 'results';
+    timer: number;
+    letter: string | null;
+    round: number;
+    currentVotingCategory?: number;
+    // Crossword specific
+    grid?: Cell[][];
+    clues?: { across: Record<string, string>, down: Record<string, string> };
+    cursors?: Record<string, { row: number, col: number }>; // playerId -> position
+    categories?: string[];
+    // Charades
+    actorId?: string;
+    currentScene?: string;
+    isPaused?: boolean;
+    guessingPlayerId?: string;
+    penalties?: Record<string, number>;
+    actingTimes?: Record<string, number>;
+    roundStartTime?: number;
+
+    charades?: {
+        activePlayerId: string;
+        word: string;
+        category: string;
+        teams: { [key: string]: string[] };
+    };
+    // Monopoly
+    monopoly?: {
+        players: Record<string, {
+            cash: number,
+            position: number,
+            properties: number[], // indices of owned properties
+            jailTurns: number,
+            getOutOfJailCards: number,
+            colorSets: Record<string, number>, // group -> count owned
+            isBankrupt: boolean
+        }>,
+        properties: Record<number, {
+            ownerId?: string,
+            houses: number, // 5 = hotel
+            isMortgaged: boolean
+        }>,
+        turnPhase: 'rolling' | 'acting' | 'auction' | 'trading',
+        currentTurnPlayerId: string,
+        doublesCount: number,
+        lastRoll?: number[],
+        auction?: {
+            propertyId: number,
+            currentBid: number,
+            highestBidder?: string,
+            timeLeft: number,
+            participants: string[] // IDs of players still in auction
+        },
+        trade?: {
+            proposerId: string,
+            receiverId: string,
+            offer: { cash: number, properties: number[] },
+            request: { cash: number, properties: number[] }
+        },
+        pot?: number, // Free parking cash (house rule option?)
+        transactionLog: string[], // Log of financial events for Banker
+        lastActionTime?: number,
+        currentCard?: { text: string, type: 'chance' | 'chest', ownerId: string } | null
+    };
+}
+
+export interface Room {
+    id: string;
+    gameType: GameType;
+    players: Player[];
+    gameState: GameState;
+    gameConfig: GameConfig;
+    answers?: Record<string, Record<number, string>>;
+    rejections?: Record<string, Record<number, string[]>>; // targetID -> cat -> [voters]
+}
+
+export interface GameConfig {
+    timerDuration: number;
+    maxRounds: number;
+    charadesCategory?: string;
+}
+
+export interface GameContextType {
+    socket: any;
+    room: Room | null;
+    player: Player | null; // Current player info (local)
+    setPlayerName: (name: string) => void;
+    setPlayerAvatar: (avatar: string) => void;
+    createRoom: (gameType: GameType, name: string, avatar: string) => void;
+    joinRoom: (roomCode: string, name: string, avatar: string, role?: 'player' | 'banker') => void;
+    leaveRoom: () => void;
+    startGame: () => void;
+    startNextRound: () => void;
+    updateSettings: (settings: Partial<GameConfig>) => void;
+    submitVote: (targetPlayerId: string, categoryIndex: number) => void;
+    nextCategory: () => void;
+    isConnected: boolean;
+    error: string | null;
+    setError: (err: string | null) => void;
+}
