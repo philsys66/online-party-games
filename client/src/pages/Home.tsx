@@ -63,6 +63,23 @@ const Home: React.FC = () => {
 
     return (
         <div className="container flex-center column">
+            <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                style={{ marginBottom: '20px' }}
+            >
+                <img
+                    src="/favicon.png"
+                    alt="Ayton's Arcade Logo"
+                    style={{
+                        width: '100px',
+                        height: '100px',
+                        filter: 'drop-shadow(0 0 15px var(--color-primary))'
+                    }}
+                />
+            </motion.div>
+
             <motion.h1
                 initial={{ y: -50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
