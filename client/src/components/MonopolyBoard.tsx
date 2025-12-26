@@ -351,7 +351,7 @@ const MonopolyBoard: React.FC = () => {
                                     }}
                                 >
                                     <strong style={{ display: 'block', color: 'white', marginBottom: '10px', textTransform: 'uppercase', fontSize: '1.2rem', textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                        {gameState.currentCard.type === 'chest' ? 'Wikipedia' : 'Venture Capitalist'}
+                                        {gameState.currentCard.type === 'chest' ? 'Wiki-pedia' : 'VC'}
                                     </strong>
                                     <div style={{ background: 'white', padding: '15px', borderRadius: '8px', fontSize: '1.1rem', color: '#333', fontWeight: 'bold' }}>
                                         {gameState.currentCard.text}
