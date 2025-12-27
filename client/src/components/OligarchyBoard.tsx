@@ -254,8 +254,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                             width: '12px',
                                             height: '12px',
                                             background: SECTORS[c.sector].color,
-                                            border: '1px solid #000',
-                                            title: c.name
+                                            border: '1px solid #000'
                                         }} title={c.name} />
                                     );
                                 })}
