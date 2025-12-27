@@ -285,10 +285,11 @@ io.on('connection', (socket) => {
 
           io.to(roomCode).emit('game_started', room);
           console.log(`Emitted game_started for room ${roomCode}`);
-        } catch (error) {
-          console.error('Error initializing Monopoly game:', error);
           socket.emit('error', 'Failed to start game: ' + (error instanceof Error ? error.message : String(error)));
         }
+      } else if (room.gameType === 'oligarchy') {
+        initializeOligarchyGame(room);
+        io.to(roomCode).emit('game_started', room);
       } else {
         startRound(roomCode);
       }
