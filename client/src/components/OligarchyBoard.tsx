@@ -132,26 +132,19 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     justifyContent: 'space-between',
                     flexShrink: 0
                 }}>
-                    <button
-                        onClick={() => window.location.reload()} // Quick exit back to lobby/home logic if game isn't finished properly? Or standard leave handling?
-                        title="Exit Game"
-                        style={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            background: 'transparent',
-                            border: '1px solid #30363d',
-                            color: '#8b949e',
-                            cursor: 'pointer',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            zIndex: 100
-                        }}
-                    >
-                        [EXIT]
-                    </button>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>OLIGARCHY <span style={{ color: '#00d2d3' }}>TERMINAL</span></div>
-                    <div style={{ display: 'flex', gap: '20px' }}>
+                }}>
+                    {/* Header Left: Room Info */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
+                            <span style={{ fontSize: '0.6rem', color: '#8b949e' }}>ROOM</span>
+                            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '2px', color: '#e6edf3' }}>{room.id}</span>
+                        </div>
+                        <div style={{ height: '30px', width: '1px', background: '#30363d' }}></div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>OLIGARCHY <span style={{ color: '#00d2d3' }}>TERMINAL</span></div>
+                    </div>
+
+                    {/* Header Right: Exit & Ticker */}
+                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                         {room.players.map(p => {
                             const pData = game.players[p.id];
                             const isTurn = game.currentTurnPlayerId === p.id;
@@ -166,6 +159,25 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                 </div>
                             );
                         })}
+
+                        <button
+                            onClick={() => window.location.reload()}
+                            title="Exit Game"
+                            style={{
+                                background: 'transparent',
+                                border: '1px solid #e74c3c',
+                                color: '#e74c3c',
+                                cursor: 'pointer',
+                                padding: '5px 10px',
+                                borderRadius: '4px',
+                                fontSize: '0.8rem',
+                                fontWeight: 'bold',
+                                fontFamily: "'JetBrains Mono', monospace",
+                                marginLeft: '10px'
+                            }}
+                        >
+                            CLOSE_SESSION
+                        </button>
                     </div>
                 </div>
 
