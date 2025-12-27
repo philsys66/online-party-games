@@ -290,8 +290,15 @@ io.on('connection', (socket) => {
           socket.emit('error', 'Failed to start game: ' + (error instanceof Error ? error.message : String(error)));
         }
       } else if (room.gameType === 'oligarchy') {
-        initializeOligarchyGame(room);
-        io.to(roomCode).emit('game_started', room);
+        console.log(`[DEBUG] Initializing Oligarchy for room ${roomCode}`);
+        try {
+          initializeOligarchyGame(room);
+          console.log(`[DEBUG] Oligarchy initialized. State:`, JSON.stringify(room.gameState.oligarchy ? 'OK' : 'MISSING'));
+          io.to(roomCode).emit('game_started', room);
+        } catch (e) {
+          console.error(`[DEBUG] Error starting Oligarchy:`, e);
+          socket.emit('error', 'Failed to init Oligarchy');
+        }
       } else {
         startRound(roomCode);
       }

@@ -13,7 +13,7 @@ export const initializeOligarchyGame = (room: Room) => {
         lastActionTime: Date.now()
     };
 
-    console.log(`Initializing Oligarchy for ${room.players.length} players.`);
+    console.log(`[OligarchyLogic] Initializing for ${room.players.length} players.`);
 
     // Only add active players
     const activePlayers = room.players.filter(p => p.role !== 'banker');
