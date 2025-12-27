@@ -294,35 +294,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     </div>
                 </div>
 
-                {/* Newsflash Overlay */}
-                <AnimatePresence>
-                    {game.activeNewsflash && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 50 }}
-                            style={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                width: '80%',
-                                maxWidth: '600px',
-                                background: '#e74c3c', // Urgent Red
-                                color: 'white',
-                                padding: '20px',
-                                borderRadius: '8px',
-                                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                                zIndex: 100,
-                                textAlign: 'center'
-                            }}
-                        >
-                            <h2 style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase' }}>🔔 GLOBAL NEWSFLASH</h2>
-                            <h3 style={{ margin: '10px 0', fontSize: '1.2rem' }}>{game.activeNewsflash.title}</h3>
-                            <p style={{ fontSize: '1rem' }}>{game.activeNewsflash.description}</p>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+
             </div>
         </>
     );
