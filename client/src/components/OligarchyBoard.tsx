@@ -30,8 +30,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     // CSS Styles
     const styles = `
         .oligarchy-app {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             background: #0d1117;
             color: #e6edf3;
             font-family: 'JetBrains Mono', monospace;
@@ -121,66 +121,6 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
         <>
             <style>{styles}</style>
             <div className="oligarchy-app">
-                {/* Header / Ticker */}
-                <div style={{
-                    height: '50px',
-                    borderBottom: '1px solid #30363d',
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '0 20px',
-                    background: '#161b22',
-                    justifyContent: 'space-between',
-                    flexShrink: 0
-                }}>
-
-                    {/* Header Left: Room Info */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
-                            <span style={{ fontSize: '0.6rem', color: '#8b949e' }}>ROOM</span>
-                            <span style={{ fontSize: '1.2rem', fontWeight: 'bold', letterSpacing: '2px', color: '#e6edf3' }}>{room.id}</span>
-                        </div>
-                        <div style={{ height: '30px', width: '1px', background: '#30363d' }}></div>
-                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>OLIGARCHY <span style={{ color: '#00d2d3' }}>TERMINAL</span></div>
-                    </div>
-
-                    {/* Header Right: Exit & Ticker */}
-                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                        {room.players.map(p => {
-                            const pData = game.players[p.id];
-                            const isTurn = game.currentTurnPlayerId === p.id;
-                            return (
-                                <div key={p.id} style={{
-                                    opacity: pData.isBankrupt ? 0.5 : 1,
-                                    borderBottom: isTurn ? '2px solid #00d2d3' : 'none',
-                                    paddingBottom: '2px',
-                                    color: isTurn ? 'white' : '#8b949e'
-                                }}>
-                                    {p.name}: <span style={{ color: '#2ecc71' }}>${pData.cash}</span>
-                                </div>
-                            );
-                        })}
-
-                        <button
-                            onClick={() => window.location.reload()}
-                            title="Exit Game"
-                            style={{
-                                background: 'transparent',
-                                border: '1px solid #e74c3c',
-                                color: '#e74c3c',
-                                cursor: 'pointer',
-                                padding: '5px 10px',
-                                borderRadius: '4px',
-                                fontSize: '0.8rem',
-                                fontWeight: 'bold',
-                                fontFamily: "'JetBrains Mono', monospace",
-                                marginLeft: '10px'
-                            }}
-                        >
-                            CLOSE_SESSION
-                        </button>
-                    </div>
-                </div>
-
                 {/* Main Content: Grid + Dashboard */}
                 <div className="oligarchy-main-layout">
 
