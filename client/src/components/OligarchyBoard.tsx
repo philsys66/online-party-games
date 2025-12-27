@@ -132,7 +132,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     justifyContent: 'space-between',
                     flexShrink: 0
                 }}>
-                }}>
+
                     {/* Header Left: Room Info */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1' }}>
