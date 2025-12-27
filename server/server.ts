@@ -299,8 +299,30 @@ io.on('connection', (socket) => {
           io.to(roomCode).emit('game_started', room);
         } catch (e) {
           console.error(`[DEBUG] Error starting Oligarchy:`, e);
+          io.to(roomCode).emit('game_started', room);
+        } catch (e) {
+          console.error(`[DEBUG] Error starting Oligarchy:`, e);
           socket.emit('error', 'Failed to init Oligarchy');
         }
+
+        // Start Oligarchy Game Loop (Timer Tick)
+        const intervalId = setInterval(() => {
+          const currentRoom = rooms[roomCode];
+          if (!currentRoom || !currentRoom.gameState.oligarchy) {
+            clearInterval(intervalId);
+            return;
+          }
+
+          // Check Auction Timer
+          if (currentRoom.gameState.oligarchy.turnPhase === 'auction') {
+            const { checkOligarchyAuctionTick } = require('./oligarchyLogic');
+            checkOligarchyAuctionTick(currentRoom);
+            // Emit update every second? Or only on significant changes?
+            // For timer UI, every second is good.
+            io.to(roomCode).emit('room_update', currentRoom);
+          }
+        }, 1000);
+
       } else {
         startRound(roomCode);
       }
@@ -781,6 +803,25 @@ io.on('connection', (socket) => {
     const room = rooms[roomCode];
     if (room && room.gameState.oligarchy) {
       endOligarchyTurn(room);
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
+  socket.on('oligarchy_start_auction', (roomCode: string, companyId: number) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.oligarchy) {
+      // Import dynamically or ensure imported at top
+      const { startOligarchyAuction } = require('./oligarchyLogic');
+      startOligarchyAuction(room, companyId, socket.id);
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
+  socket.on('oligarchy_bid', (roomCode: string, amount: number) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.oligarchy) {
+      const { handleOligarchyBid } = require('./oligarchyLogic');
+      handleOligarchyBid(room, socket.id, amount);
       io.to(roomCode).emit('room_update', room);
     }
   });

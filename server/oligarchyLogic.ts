@@ -339,3 +339,13 @@ export const endOligarchyAuction = (room: Room) => {
     game.turnPhase = 'acting'; // Return to seller's turn (or 'rolling'? Usually selling is an action during turn)
     // Actually if they sold during their turn, they can still act.
 };
+
+export const checkOligarchyAuctionTick = (room: Room) => {
+    if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
+    const auction = room.gameState.oligarchy.auction;
+
+    auction.timeLeft -= 1;
+    if (auction.timeLeft <= 0) {
+        endOligarchyAuction(room);
+    }
+};

@@ -20,7 +20,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     const isMyTurn = game.currentTurnPlayerId === socket.id;
 
     const [activeTab, setActiveTab] = React.useState<'market' | 'assets'>('market');
-    const [bidAmount, setBidAmount] = React.useState<string>(''); // For manual entry if needed, or just visual
+    // const [bidAmount, setBidAmount] = React.useState<string>(''); // For manual entry if needed, or just visual
 
 
     // Sound effects (placeholders)
@@ -355,7 +355,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                 {(() => {
                                                     const pos = playerState.position;
                                                     const companyState = game.companies[pos];
-                                                    const company = OLIGARCHY_BOARD[pos];
+                                                    // const company = OLIGARCHY_BOARD[pos];
                                                     if (!companyState.ownerId && playerState.cash >= companyState.currentValue) {
                                                         return (
                                                             <button
