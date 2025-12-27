@@ -147,6 +147,9 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                         <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
                             {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
                         </div>
+                        <div style={{ fontSize: '0.6rem', color: '#333', marginTop: '5px' }}>
+                            DEBUG: Me={socket.id.substring(0, 4)}... Turn={game.currentTurnPlayerId.substring(0, 4)}... Match={isMyTurn ? 'YES' : 'NO'} Phase={game.turnPhase}
+                        </div>
                         {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>YOUR TURN</div>}
                     </div>
 

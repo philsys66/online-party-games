@@ -11,6 +11,7 @@ const britishCategories_1 = require("./britishCategories");
 const crosswordData_1 = __importDefault(require("./crosswordData"));
 const charadesData_1 = require("./charadesData");
 const monopolyLogic_1 = require("./monopolyLogic");
+const oligarchyLogic_1 = require("./oligarchyLogic");
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 const server = http_1.default.createServer(app);
@@ -29,6 +30,7 @@ const ROOM_CODES = [
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
     socket.on('create_room', (data) => {
+        console.log(`[DEBUG] create_room request. GameType: ${data.gameType}`);
         // Generate a unique room code
         let roomCode = "";
         let attempts = 0;
@@ -118,6 +120,9 @@ io.on('connection', (socket) => {
         if (data.gameType === 'monopoly') {
             (0, monopolyLogic_1.initializeMonopolyGame)(rooms[roomCode]);
         }
+        else if (data.gameType === 'oligarchy') {
+            (0, oligarchyLogic_1.initializeOligarchyGame)(rooms[roomCode]);
+        }
         socket.join(roomCode);
         socket.emit('room_joined', rooms[roomCode]);
         console.log(`Room ${roomCode} created by ${data.playerName}`);
@@ -203,6 +208,7 @@ io.on('connection', (socket) => {
         console.log(`[DEBUG] Received start_game request for room: ${roomCode} from socket ${socket.id}`);
         const room = rooms[roomCode];
         if (room) {
+            console.log(`[DEBUG] Starting Game. Type: ${room.gameType}`);
             room.gameState.status = 'playing';
             room.gameState.round = 1;
             room.players.forEach(p => p.score = 0);
@@ -241,6 +247,18 @@ io.on('connection', (socket) => {
                 catch (error) {
                     console.error('Error initializing Monopoly game:', error);
                     socket.emit('error', 'Failed to start game: ' + (error instanceof Error ? error.message : String(error)));
+                }
+            }
+            else if (room.gameType === 'oligarchy') {
+                console.log(`[DEBUG] Initializing Oligarchy for room ${roomCode}`);
+                try {
+                    (0, oligarchyLogic_1.initializeOligarchyGame)(room);
+                    console.log(`[DEBUG] Oligarchy initialized. State:`, JSON.stringify(room.gameState.oligarchy ? 'OK' : 'MISSING'));
+                    io.to(roomCode).emit('game_started', room);
+                }
+                catch (e) {
+                    console.error(`[DEBUG] Error starting Oligarchy:`, e);
+                    socket.emit('error', 'Failed to init Oligarchy');
                 }
             }
             else {
@@ -644,6 +662,37 @@ io.on('connection', (socket) => {
         const room = rooms[roomCode];
         if (room && room.gameState.monopoly) {
             (0, monopolyLogic_1.rejectTrade)(room, socket.id);
+            io.to(roomCode).emit('room_update', room);
+        }
+    });
+    socket.on('monopoly_dismiss_card', (roomCode) => {
+        const room = rooms[roomCode];
+        if (room && room.gameState.monopoly) {
+            room.gameState.monopoly.currentCard = null;
+            // User Request: "Finish the go" when card is dismissed
+            (0, monopolyLogic_1.endTurn)(room);
+            io.to(roomCode).emit('room_update', room);
+        }
+    });
+    // --- Oligarchy Events ---
+    socket.on('oligarchy_roll', (roomCode) => {
+        const room = rooms[roomCode];
+        if (room && room.gameState.oligarchy) {
+            (0, oligarchyLogic_1.handleOligarchyRoll)(room, socket.id);
+            io.to(roomCode).emit('room_update', room);
+        }
+    });
+    socket.on('oligarchy_buy', (roomCode) => {
+        const room = rooms[roomCode];
+        if (room && room.gameState.oligarchy) {
+            (0, oligarchyLogic_1.purchaseOligarchyCompany)(room, socket.id);
+            io.to(roomCode).emit('room_update', room);
+        }
+    });
+    socket.on('oligarchy_end_turn', (roomCode) => {
+        const room = rooms[roomCode];
+        if (room && room.gameState.oligarchy) {
+            (0, oligarchyLogic_1.endOligarchyTurn)(room);
             io.to(roomCode).emit('room_update', room);
         }
     });
