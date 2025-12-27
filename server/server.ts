@@ -11,6 +11,9 @@ import {
   createTradeOffer, acceptTrade, rejectTrade, declareBankruptcy, checkTurnTimeout,
   mortgageProperty, unmortgageProperty
 } from './monopolyLogic';
+import {
+  initializeOligarchyGame, handleOligarchyRoll, purchaseOligarchyCompany, endOligarchyTurn
+} from './oligarchyLogic';
 import { Room, Player, GameState, GameType, GameConfig } from './types';
 
 const app = express();
@@ -148,6 +151,8 @@ io.on('connection', (socket) => {
 
     if (data.gameType === 'monopoly') {
       initializeMonopolyGame(rooms[roomCode]);
+    } else if (data.gameType === 'oligarchy') {
+      initializeOligarchyGame(rooms[roomCode]);
     }
 
     socket.join(roomCode);
@@ -739,6 +744,31 @@ io.on('connection', (socket) => {
       room.gameState.monopoly.currentCard = null;
       // User Request: "Finish the go" when card is dismissed
       endTurn(room);
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
+  // --- Oligarchy Events ---
+  socket.on('oligarchy_roll', (roomCode: string) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.oligarchy) {
+      handleOligarchyRoll(room, socket.id);
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
+  socket.on('oligarchy_buy', (roomCode: string) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.oligarchy) {
+      purchaseOligarchyCompany(room, socket.id);
+      io.to(roomCode).emit('room_update', room);
+    }
+  });
+
+  socket.on('oligarchy_end_turn', (roomCode: string) => {
+    const room = rooms[roomCode];
+    if (room && room.gameState.oligarchy) {
+      endOligarchyTurn(room);
       io.to(roomCode).emit('room_update', room);
     }
   });
