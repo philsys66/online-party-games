@@ -149,7 +149,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                     }}>
                                         {/* Header: Value & Name */}
                                         <div style={{ fontSize: '0.6rem', color: sectorColor, display: 'flex', justifyContent: 'space-between' }}>
-                                            <span>${company.value}</span>
+                                            <span>${companyState.currentValue}M</span>
                                             {owner && <span>👑 {owner.name.substring(0, 3)}</span>}
                                         </div>
                                         <div style={{ fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'center', lineHeight: '1.1' }}>
@@ -158,7 +158,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
 
                                         {/* Rent Indicator */}
                                         <div style={{ fontSize: '0.5rem', color: '#8b949e', textAlign: 'center' }}>
-                                            Base: ${company.baseRent}
+                                            {SECTORS[company.sector].shortName}
                                         </div>
 
                                         {/* Player Tokens */}
@@ -243,7 +243,25 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                             }}>
                                 LIQUIDITY: ${game.players[game.currentTurnPlayerId]?.cash || 0}M
                             </div>
-                            {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>YOUR TURN</div>}
+
+                            {/* Portfolio Visualization */}
+                            <div style={{ marginTop: '10px', display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
+                                {game.players[game.currentTurnPlayerId]?.companies.map(cId => {
+                                    const c = OLIGARCHY_BOARD.find(b => b.id === cId);
+                                    if (!c) return null;
+                                    return (
+                                        <div key={cId} style={{
+                                            width: '12px',
+                                            height: '12px',
+                                            background: SECTORS[c.sector].color,
+                                            border: '1px solid #000',
+                                            title: c.name
+                                        }} title={c.name} />
+                                    );
+                                })}
+                            </div>
+
+                            {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem', marginTop: '10px' }}>YOUR TURN</div>}
                         </div>
 
                         {/* Controls */}
@@ -271,7 +289,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                         onClick={() => socket.emit('oligarchy_buy', room.id)}
                                                         style={btnStyle('#00d2d3')}
                                                     >
-                                                        ACQUIRE ASSET (${company.value})
+                                                        ACQUIRE ASSET (${companyState.currentValue}M)
                                                     </button>
                                                 );
                                             }

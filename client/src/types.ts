@@ -95,6 +95,7 @@ export interface GameState {
         }>;
         companies: Record<number, {
             ownerId?: string;
+            currentValue: number;
         }>;
         turnPhase: 'rolling' | 'acting';
         currentTurnPlayerId: string;
