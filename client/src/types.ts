@@ -7,7 +7,7 @@ export interface Player {
     role?: 'player' | 'banker';
 }
 
-export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly';
+export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly' | 'oligarchy';
 
 export interface Cell {
     row: number;
@@ -83,6 +83,25 @@ export interface GameState {
         transactionLog: string[], // Log of financial events for Banker
         lastActionTime?: number,
         currentCard?: { text: string, type: 'chance' | 'chest', ownerId: string } | null
+    };
+    // Oligarchy
+    oligarchy?: {
+        players: Record<string, {
+            cash: number;
+            position: number;
+            companies: number[];
+            isBankrupt: boolean;
+            isAfk?: boolean;
+        }>;
+        companies: Record<number, {
+            ownerId?: string;
+        }>;
+        turnPhase: 'rolling' | 'acting';
+        currentTurnPlayerId: string;
+        activeNewsflash?: { title: string, description: string, type: string, sectors: string[] } | null;
+        lastRoll?: number[];
+        transactionLog: string[];
+        lastActionTime?: number;
     };
 }
 
