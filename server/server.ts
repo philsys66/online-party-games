@@ -53,6 +53,7 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('create_room', (data: { playerName: string, avatar: string, gameType: GameType, userId?: string }) => {
+    console.log(`[DEBUG] create_room request. GameType: ${data.gameType}`);
     // Generate a unique room code
     let roomCode = "";
     let attempts = 0;
@@ -249,6 +250,7 @@ io.on('connection', (socket) => {
     console.log(`[DEBUG] Received start_game request for room: ${roomCode} from socket ${socket.id}`);
     const room = rooms[roomCode];
     if (room) {
+      console.log(`[DEBUG] Starting Game. Type: ${room.gameType}`);
       room.gameState.status = 'playing';
       room.gameState.round = 1;
       room.players.forEach(p => p.score = 0);
