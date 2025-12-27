@@ -281,89 +281,149 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
 
                     {/* Right Panel: Controls & Logs */}
                     <div className="oligarchy-control-panel">
-                        {/* Active Player Status */}
-                        <div style={{ marginBottom: '20px' }}>
-                            <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#e6edf3' }}>
-                                {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
+                        {/* Tabs */}
+                        <div style={{ display: 'flex', borderBottom: '1px solid #30363d', marginBottom: '20px' }}>
+                            <div
+                                onClick={() => setActiveTab('market')}
+                                style={{ flex: 1, padding: '10px', textAlign: 'center', cursor: 'pointer', borderBottom: activeTab === 'market' ? '2px solid #f78166' : 'none', color: activeTab === 'market' ? '#e6edf3' : '#8b949e', fontWeight: 'bold' }}
+                            >
+                                MARKET
                             </div>
-                            <div style={{
-                                fontSize: '1.2rem',
-                                color: '#2ecc71',
-                                marginTop: '5px',
-                                border: '1px solid #2ecc71',
-                                padding: '5px 10px',
-                                borderRadius: '4px',
-                                display: 'inline-block',
-                                background: 'rgba(46, 204, 113, 0.1)'
-                            }}>
-                                LIQUIDITY: ${game.players[game.currentTurnPlayerId]?.cash || 0}M
+                            <div
+                                onClick={() => setActiveTab('assets')}
+                                style={{ flex: 1, padding: '10px', textAlign: 'center', cursor: 'pointer', borderBottom: activeTab === 'assets' ? '2px solid #f78166' : 'none', color: activeTab === 'assets' ? '#e6edf3' : '#8b949e', fontWeight: 'bold' }}
+                            >
+                                ASSETS
                             </div>
-
-                            {/* Portfolio Visualization */}
-                            <div style={{ marginTop: '10px', display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
-                                {game.players[game.currentTurnPlayerId]?.companies.map(cId => {
-                                    const c = OLIGARCHY_BOARD.find(b => b.id === cId);
-                                    if (!c) return null;
-                                    return (
-                                        <div key={cId} style={{
-                                            width: '12px',
-                                            height: '12px',
-                                            background: SECTORS[c.sector].color,
-                                            border: '1px solid #000'
-                                        }} title={c.name} />
-                                    );
-                                })}
-                            </div>
-
-                            {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem', marginTop: '10px' }}>YOUR TURN</div>}
                         </div>
 
-                        {/* Controls */}
-                        {isMyTurn && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                                {game.turnPhase === 'rolling' && (
-                                    <button
-                                        onClick={() => socket.emit('oligarchy_roll', room.id)}
-                                        style={btnStyle('#2ecc71')}
-                                    >
-                                        EXECUTE MOVEMENT (ROLL)
-                                    </button>
-                                )}
+                        {activeTab === 'market' ? (
+                            <>
+                                {/* Active Player Status */}
+                                <div style={{ marginBottom: '20px' }}>
+                                    <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#e6edf3' }}>
+                                        {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '1.2rem',
+                                        color: '#2ecc71',
+                                        marginTop: '5px',
+                                        border: '1px solid #2ecc71',
+                                        padding: '5px 10px',
+                                        borderRadius: '4px',
+                                        display: 'inline-block',
+                                        background: 'rgba(46, 204, 113, 0.1)'
+                                    }}>
+                                        LIQUIDITY: ${game.players[game.currentTurnPlayerId]?.cash || 0}M
+                                    </div>
 
-                                {game.turnPhase === 'acting' && (
-                                    <>
-                                        {/* Check if current tile is unowned and buyable */}
-                                        {(() => {
-                                            const pos = playerState.position;
-                                            const companyState = game.companies[pos];
-                                            const company = OLIGARCHY_BOARD[pos];
-                                            if (!companyState.ownerId && playerState.cash >= company.value) {
-                                                return (
-                                                    <button
-                                                        onClick={() => socket.emit('oligarchy_buy', room.id)}
-                                                        style={btnStyle('#00d2d3')}
-                                                    >
-                                                        ACQUIRE ASSET (${companyState.currentValue}M)
-                                                    </button>
-                                                );
-                                            }
-                                            return null;
-                                        })()}
+                                    {/* Portfolio Visualization */}
+                                    <div style={{ marginTop: '10px', display: 'flex', gap: '2px', flexWrap: 'wrap' }}>
+                                        {game.players[game.currentTurnPlayerId]?.companies.map(cId => {
+                                            const c = OLIGARCHY_BOARD.find(b => b.id === cId);
+                                            if (!c) return null;
+                                            return (
+                                                <div key={cId} style={{
+                                                    width: '12px',
+                                                    height: '12px',
+                                                    background: SECTORS[c.sector].color,
+                                                    border: '1px solid #000'
+                                                }} title={c.name} />
+                                            );
+                                        })}
+                                    </div>
 
-                                        <button
-                                            onClick={() => socket.emit('oligarchy_end_turn', room.id)}
-                                            style={btnStyle('#ff6b6b')}
-                                        >
-                                            END FISCAL PERIOD
-                                        </button>
-                                    </>
+                                    {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem', marginTop: '10px' }}>YOUR TURN</div>}
+                                </div>
+
+                                {/* Controls */}
+                                {isMyTurn && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                                        {game.turnPhase === 'rolling' && (
+                                            <button
+                                                onClick={() => socket.emit('oligarchy_roll', room.id)}
+                                                style={btnStyle('#2ecc71')}
+                                            >
+                                                EXECUTE MOVEMENT (ROLL)
+                                            </button>
+                                        )}
+
+                                        {game.turnPhase === 'acting' && (
+                                            <>
+                                                {/* Check if current tile is unowned and buyable */}
+                                                {(() => {
+                                                    const pos = playerState.position;
+                                                    const companyState = game.companies[pos];
+                                                    const company = OLIGARCHY_BOARD[pos];
+                                                    if (!companyState.ownerId && playerState.cash >= companyState.currentValue) {
+                                                        return (
+                                                            <button
+                                                                onClick={() => socket.emit('oligarchy_buy', room.id)}
+                                                                style={btnStyle('#00d2d3')}
+                                                            >
+                                                                ACQUIRE ASSET (${companyState.currentValue}M)
+                                                            </button>
+                                                        );
+                                                    }
+                                                    return null;
+                                                })()}
+
+                                                <button
+                                                    onClick={() => socket.emit('oligarchy_end_turn', room.id)}
+                                                    style={btnStyle('#ff6b6b')}
+                                                >
+                                                    END FISCAL PERIOD
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 )}
+                            </>
+                        ) : (
+                            /* Assets Tab View */
+                            <div style={{ flex: 1, overflowY: 'auto' }}>
+                                <div style={{ marginBottom: '15px', padding: '10px', background: '#161b22', borderRadius: '6px' }}>
+                                    <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>NET WORTH</div>
+                                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+                                        ${playerState.cash + playerState.companies.reduce((sum, id) => sum + game.companies[id].currentValue, 0)}M
+                                    </div>
+                                    <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>CASH: ${playerState.cash}M</div>
+                                </div>
+
+                                <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#8b949e' }}>PORTFOLIO</div>
+                                {playerState.companies.length === 0 && <div style={{ color: '#8b949e', fontStyle: 'italic' }}>No assets owned.</div>}
+                                {playerState.companies.map(cId => {
+                                    const c = OLIGARCHY_BOARD.find(b => b.id === cId)!;
+                                    const val = game.companies[cId].currentValue;
+                                    return (
+                                        <div key={cId} style={{ background: '#161b22', padding: '10px', borderRadius: '6px', marginBottom: '8px', borderLeft: `4px solid ${SECTORS[c.sector].color}` }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ fontWeight: 'bold' }}>{c.name}</span>
+                                                <span style={{ color: '#2ecc71' }}>${val}M</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                                                <span style={{ fontSize: '0.7rem', color: '#8b949e' }}>{SECTORS[c.sector].name}</span>
+                                                <button
+                                                    onClick={() => {
+                                                        if (game.turnPhase !== 'auction') {
+                                                            socket.emit('oligarchy_start_auction', room.id, c.id);
+                                                        }
+                                                    }}
+                                                    disabled={game.turnPhase === 'auction'}
+                                                    style={{ background: '#d35400', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.7rem', fontWeight: 'bold' }}
+                                                >
+                                                    SELL (AUCTION)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
 
                         {/* Newsfeed Log */}
-                        <div style={{ flex: 1, background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                        <div style={{ height: '30%', minHeight: '150px', marginTop: 'auto', background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem' }}>
                             {game.transactionLog.map((log, i) => (
                                 <div key={i} style={{ marginBottom: '5px', borderBottom: '1px solid #333', paddingBottom: '2px' }}>
                                     <span style={{ color: '#00d2d3' }}>{'>'}</span> {log}
