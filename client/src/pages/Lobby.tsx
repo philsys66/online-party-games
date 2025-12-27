@@ -92,7 +92,7 @@ const Lobby: React.FC = () => {
                 </div>
             </div>
 
-            <div className="glass-panel" style={{ marginTop: '20px', display: room.gameType === 'crossword' || room.gameType === 'monopoly' ? 'none' : 'block' }}>
+            <div className="glass-panel" style={{ marginTop: '20px', display: ['crossword', 'monopoly', 'oligarchy'].includes(room.gameType) ? 'none' : 'block' }}>
                 <h3>Game Settings</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '10px' }}>
                     {room.gameType !== 'charades' && room.gameType !== 'oligarchy' && (
