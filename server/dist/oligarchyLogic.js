@@ -48,6 +48,10 @@ const handleOligarchyRoll = (room, playerId) => {
         return;
     if (game.turnPhase !== 'rolling')
         return;
+    // Clear previous newsflash when a new turn action starts
+    if (game.activeNewsflash) {
+        game.activeNewsflash = null;
+    }
     const die1 = Math.floor(Math.random() * 6) + 1;
     const die2 = Math.floor(Math.random() * 6) + 1;
     const total = die1 + die2;
