@@ -7,6 +7,7 @@ import ResultsView from '../components/ResultsView';
 import CrosswordBoard from '../components/CrosswordBoard';
 import CharadesBoard from '../components/CharadesBoard';
 import MonopolyBoard from '../components/MonopolyBoard';
+import { OligarchyBoard } from '../components/OligarchyBoard';
 import GameMenu from '../components/GameMenu';
 
 const GameRoom: React.FC = () => {
@@ -83,6 +84,7 @@ const GameRoom: React.FC = () => {
         if (room.gameType === 'crossword') return <CrosswordBoard />;
         if (room.gameType === 'charades') return <CharadesBoard />;
         if (room.gameType === 'monopoly') return <MonopolyBoard />;
+        if (room.gameType === 'oligarchy') return <OligarchyBoard room={room} socket={socket} userId={socket.id} />;
 
         // Use server categories if available, else default list
         const categories = room.gameState.categories || CATEGORIES_LIST;
