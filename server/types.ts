@@ -105,7 +105,7 @@ export interface GameState {
             ownerId?: string;
             currentValue: number; // Dynamic Market Value
         }>;
-        turnPhase: 'rolling' | 'acting';
+        turnPhase: 'rolling' | 'acting' | 'auction';
         currentTurnPlayerId: string;
         roundCount: number;       // For Newsflash trigger
         activeNewsflash?: {
@@ -113,6 +113,14 @@ export interface GameState {
             description: string;
             type: string;
             sectors: string[]; // Affected sectors
+        } | null;
+        auction?: {
+            companyId: number;
+            currentBid: number;
+            highestBidderId?: string;
+            sellerId: string; // Player who initiated the sale
+            timeLeft: number;
+            participants: string[]; // IDs
         } | null;
         lastRoll?: number[];
         transactionLog: string[];
