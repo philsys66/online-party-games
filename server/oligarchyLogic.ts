@@ -35,7 +35,8 @@ export const initializeOligarchyGame = (room: Room) => {
     OLIGARCHY_BOARD.forEach(company => {
         if (room.gameState.oligarchy) {
             room.gameState.oligarchy.companies[company.id] = {
-                ownerId: undefined
+                ownerId: undefined,
+                currentValue: company.value // Initialize with base value
             };
         }
     });
@@ -156,7 +157,7 @@ export const calculateSubscriptionFee = (room: Room, companyId: number): number 
     if (ownedInSector >= 6) percentage = 1.0;
     else if (ownedInSector >= 3) percentage = 0.30;
 
-    return Math.floor(company.value * percentage);
+    return Math.floor(companyState.currentValue * percentage);
 };
 
 export const purchaseOligarchyCompany = (room: Room, playerId: string) => {
@@ -167,16 +168,16 @@ export const purchaseOligarchyCompany = (room: Room, playerId: string) => {
     const companyState = game.companies[company.id];
 
     if (companyState.ownerId) return; // Already owned
-    if (player.cash < company.value) return;
+    if (player.cash < companyState.currentValue) return;
 
-    player.cash -= company.value;
+    player.cash -= companyState.currentValue;
     companyState.ownerId = playerId;
 
     if (!player.companies.includes(company.id)) {
         player.companies.push(company.id);
     }
 
-    game.transactionLog.unshift(`[BUY] ${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${company.value}.`);
+    game.transactionLog.unshift(`[BUY] ${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${companyState.currentValue}M.`);
 
     checkOligarchVictory(room, playerId);
 };
@@ -221,6 +222,32 @@ const triggerNewsflash = (room: Room) => {
     };
 
     game.transactionLog.unshift(`[NEWSFLASH] ${event.title.toUpperCase()}: ${event.description}`);
+
+    // APPLY ECONOMIC EFFECTS
+    const affectedSectors = event.sectors;
+    const allCompanies = OLIGARCHY_BOARD;
+
+    allCompanies.forEach(c => {
+        if (affectedSectors.includes(c.sector)) {
+            const companyState = game.companies[c.id];
+
+            // 1. Update Market Value
+            if (event.valueChange) {
+                // Keep value reasonably bounded? e.g. min $10M
+                const newValue = Math.floor(companyState.currentValue * event.valueChange);
+                companyState.currentValue = Math.max(10, newValue);
+            }
+
+            // 2. Direct Cash Effect (Dividend / Cost) to Owner
+            if (companyState.ownerId && event.cashEffect) {
+                const owner = game.players[companyState.ownerId];
+                if (owner && !owner.isBankrupt) {
+                    owner.cash += event.cashEffect;
+                    // Log if significant?
+                }
+            }
+        }
+    });
 };
 
 const checkOligarchVictory = (room: Room, playerId: string) => {
