@@ -123,87 +123,94 @@ const GameRoom: React.FC = () => {
         );
     };
 
-    return (
-        <div className="container column" style={{ paddingBottom: '100px', paddingTop: '80px' }}>
-            <header className="glass-panel column" style={{ position: 'sticky', top: '10px', zIndex: 10, padding: '10px 20px' }}>
-                <GameMenu />
-                <div className="flex-center" style={{ justifyContent: 'space-between', width: '100%' }}>
-                    {/* Left Side (Letter or Charades Counter) */}
-                    <div className="flex-center column" style={{ width: '140px' }}>
-                        {room.gameType === 'scattergories' && (
-                            <>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>LETTER</span>
-                                <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>
-                                    {room.gameState.letter}
-                                </span>
-                            </>
-                        )}
-                        {room.gameType === 'charades' && (
-                            <>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>REMAINING</span>
-                                <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--color-accent)' }}>
-                                    {room.players.length - (room.gameState.actingTimes ? Object.keys(room.gameState.actingTimes).length : 0)}
-                                </span>
-                            </>
-                        )}
-                    </div>
+};
 
-                    {/* Center (Room Code) */}
-                    <div className="flex-center column">
-                        <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>ROOM</span>
-                        <span style={{ fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '2px' }}>
-                            {room.id}
-                        </span>
-                    </div>
+// Full Screen Overrides for certain games that manage their own layout
+if (room.gameType === 'oligarchy') {
+    return <OligarchyBoard room={room} socket={socket} userId={socket.id} />;
+}
 
-                    {/* Timer/Round Info - Hide for Crossword & Monopoly which don't use the standard header timer */}
-                    {(room.gameType === 'scattergories') && (
-                        <div style={{ textAlign: 'center', marginTop: '5px' }}>
-                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#f39c12' }}>
-                                {Math.floor(room.gameState.timer / 60)}:{(room.gameState.timer % 60).toString().padStart(2, '0')}
-                            </div>
-                        </div>
+return (
+    <div className="container column" style={{ paddingBottom: '100px', paddingTop: '80px' }}>
+        <header className="glass-panel column" style={{ position: 'sticky', top: '10px', zIndex: 10, padding: '10px 20px' }}>
+            <GameMenu />
+            <div className="flex-center" style={{ justifyContent: 'space-between', width: '100%' }}>
+                {/* Left Side (Letter or Charades Counter) */}
+                <div className="flex-center column" style={{ width: '140px' }}>
+                    {room.gameType === 'scattergories' && (
+                        <>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>LETTER</span>
+                            <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+                                {room.gameState.letter}
+                            </span>
+                        </>
                     )}
-                    {/* Right Side (Timer / Stopwatch) */}
-                    <div className="flex-center column" style={{ width: '140px' }}>
-                        {room.gameType === 'charades' ? (
-                            <>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>TIME</span>
-                                <span style={{ fontSize: '2rem', fontFamily: 'monospace', color: room.gameState.isPaused ? 'red' : 'white' }}>
-                                    {formatTime(elapsedTime)}
-                                </span>
-                            </>
-                        ) : (
-                            <span style={{ fontSize: '1.2rem', color: 'var(--color-text-dim)', opacity: 0.5 }}>-</span>
-                        )}
-                    </div>
+                    {room.gameType === 'charades' && (
+                        <>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>REMAINING</span>
+                            <span style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'var(--color-accent)' }}>
+                                {room.players.length - (room.gameState.actingTimes ? Object.keys(room.gameState.actingTimes).length : 0)}
+                            </span>
+                        </>
+                    )}
                 </div>
 
-                {/* Crossword Scores Header */}
-                {room.gameType === 'crossword' && (
-                    <div style={{
-                        borderTop: '1px solid var(--color-glass-border)',
-                        marginTop: '10px',
-                        paddingTop: '10px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: '15px',
-                        flexWrap: 'wrap'
-                    }}>
-                        {room.players.map(p => (
-                            <div key={p.id} className="flex-center" style={{ gap: '6px', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '12px' }}>
-                                <img src={p.avatar} alt={p.name} style={{ width: '20px', height: '20px', borderRadius: '50%' }} />
-                                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>{p.name}</span>
-                                <span style={{ fontWeight: 'bold', color: 'var(--color-accent)', fontSize: '1.1rem' }}>{p.score}</span>
-                            </div>
-                        ))}
+                {/* Center (Room Code) */}
+                <div className="flex-center column">
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>ROOM</span>
+                    <span style={{ fontSize: '1.5rem', fontWeight: 'bold', letterSpacing: '2px' }}>
+                        {room.id}
+                    </span>
+                </div>
+
+                {/* Timer/Round Info - Hide for Crossword & Monopoly which don't use the standard header timer */}
+                {(room.gameType === 'scattergories') && (
+                    <div style={{ textAlign: 'center', marginTop: '5px' }}>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#f39c12' }}>
+                            {Math.floor(room.gameState.timer / 60)}:{(room.gameState.timer % 60).toString().padStart(2, '0')}
+                        </div>
                     </div>
                 )}
-            </header>
+                {/* Right Side (Timer / Stopwatch) */}
+                <div className="flex-center column" style={{ width: '140px' }}>
+                    {room.gameType === 'charades' ? (
+                        <>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>TIME</span>
+                            <span style={{ fontSize: '2rem', fontFamily: 'monospace', color: room.gameState.isPaused ? 'red' : 'white' }}>
+                                {formatTime(elapsedTime)}
+                            </span>
+                        </>
+                    ) : (
+                        <span style={{ fontSize: '1.2rem', color: 'var(--color-text-dim)', opacity: 0.5 }}>-</span>
+                    )}
+                </div>
+            </div>
 
-            {renderContent()}
-        </div>
-    );
+            {/* Crossword Scores Header */}
+            {room.gameType === 'crossword' && (
+                <div style={{
+                    borderTop: '1px solid var(--color-glass-border)',
+                    marginTop: '10px',
+                    paddingTop: '10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '15px',
+                    flexWrap: 'wrap'
+                }}>
+                    {room.players.map(p => (
+                        <div key={p.id} className="flex-center" style={{ gap: '6px', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '12px' }}>
+                            <img src={p.avatar} alt={p.name} style={{ width: '20px', height: '20px', borderRadius: '50%' }} />
+                            <span style={{ fontSize: '0.9rem', color: 'var(--color-text-dim)' }}>{p.name}</span>
+                            <span style={{ fontWeight: 'bold', color: 'var(--color-accent)', fontSize: '1.1rem' }}>{p.score}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </header>
+
+        {renderContent()}
+    </div>
+);
 };
 
 export default GameRoom;

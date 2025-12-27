@@ -132,6 +132,24 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     justifyContent: 'space-between',
                     flexShrink: 0
                 }}>
+                    <button
+                        onClick={() => window.location.reload()} // Quick exit back to lobby/home logic if game isn't finished properly? Or standard leave handling?
+                        title="Exit Game"
+                        style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            background: 'transparent',
+                            border: '1px solid #30363d',
+                            color: '#8b949e',
+                            cursor: 'pointer',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            zIndex: 100
+                        }}
+                    >
+                        [EXIT]
+                    </button>
                     <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>OLIGARCHY <span style={{ color: '#00d2d3' }}>TERMINAL</span></div>
                     <div style={{ display: 'flex', gap: '20px' }}>
                         {room.players.map(p => {
