@@ -265,12 +265,10 @@ const checkOligarchVictory = (room: Room, playerId: string) => {
         if (owned) completedSectors++;
     });
 
-});
-
-if (completedSectors >= 3) {
-    game.transactionLog.unshift(`[VICTORY] ${room.players.find(p => p.id === playerId)?.name} has achieved global dominance (3 Sectors owned)!`);
-    // Provide visual win state?
-}
+    if (completedSectors >= 3) {
+        game.transactionLog.unshift(`[VICTORY] ${room.players.find(p => p.id === playerId)?.name} has achieved global dominance (3 Sectors owned)!`);
+        // Provide visual win state?
+    }
 };
 
 export const startOligarchyAuction = (room: Room, companyId: number, sellerId: string) => {

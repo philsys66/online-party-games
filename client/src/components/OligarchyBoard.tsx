@@ -19,7 +19,9 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     const playerState = game.players[socket.id];
     const isMyTurn = game.currentTurnPlayerId === socket.id;
 
-    // const [showBuyModal, setShowBuyModal] = useState(false);
+    const [activeTab, setActiveTab] = React.useState<'market' | 'assets'>('market');
+    const [bidAmount, setBidAmount] = React.useState<string>(''); // For manual entry if needed, or just visual
+
 
     // Sound effects (placeholders)
     // const [playCash] = useSound('/sounds/cash.mp3');
@@ -216,6 +218,60 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                             <h2 style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase' }}>🔔 NEWSFLASH</h2>
                                             <h3 style={{ margin: '10px 0', fontSize: '1.2rem', fontWeight: 'bold' }}>{game.activeNewsflash.title}</h3>
                                             <p style={{ fontSize: '1rem' }}>{game.activeNewsflash.description}</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            {/* Auction Overlay */}
+                            <AnimatePresence>
+                                {game.turnPhase === 'auction' && game.auction && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+                                        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.8)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', zIndex: 90, backdropFilter: 'blur(8px)' }}
+                                    >
+                                        <h2 style={{ color: '#f1c40f', fontSize: '2rem', margin: '0 0 10px 0', textShadow: '0 0 10px #f1c40f' }}>🔨 LIVE AUCTION</h2>
+                                        <div style={{ background: '#161b22', border: '1px solid #30363d', padding: '20px', borderRadius: '8px', width: '80%', maxWidth: '400px', textAlign: 'center' }}>
+                                            <h3 style={{ fontSize: '1.5rem', marginBottom: '5px' }}>
+                                                {OLIGARCHY_BOARD.find(c => c.id === game.auction!.companyId)?.name}
+                                            </h3>
+                                            <div style={{ color: '#8b949e', marginBottom: '20px' }}>
+                                                Seller: {room.players.find(p => p.id === game.auction!.sellerId)?.name}
+                                            </div>
+
+                                            <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#2ecc71', marginBottom: '10px' }}>
+                                                ${game.auction.currentBid}M
+                                            </div>
+                                            <div style={{ color: '#8b949e', marginBottom: '20px' }}>
+                                                Highest Bidder: {game.auction.highestBidderId ? room.players.find(p => p.id === game.auction!.highestBidderId)?.name : 'No Bids'}
+                                            </div>
+
+                                            {/* Bidding Controls */}
+                                            {socket.id !== game.auction.sellerId && (
+                                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                                    {[1, 5, 10, 50].map(inc => (
+                                                        <button
+                                                            key={inc}
+                                                            onClick={() => socket.emit('oligarchy_bid', room.id, game.auction!.currentBid + inc)}
+                                                            disabled={playerState.cash < game.auction!.currentBid + inc}
+                                                            style={{
+                                                                background: '#238636', color: 'white', border: 'none', padding: '10px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold',
+                                                                opacity: playerState.cash < game.auction!.currentBid + inc ? 0.5 : 1
+                                                            }}
+                                                        >
+                                                            +${inc}M
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {socket.id === game.auction.sellerId && (
+                                                <div style={{ marginTop: '10px', color: '#8b949e', fontStyle: 'italic' }}>
+                                                    You cannot bid on your own auction.
+                                                </div>
+                                            )}
+                                            <div style={{ marginTop: '20px', fontSize: '0.8rem', color: '#8b949e' }}>
+                                                Closing in {game.auction.timeLeft}s...
+                                            </div>
                                         </div>
                                     </motion.div>
                                 )}
