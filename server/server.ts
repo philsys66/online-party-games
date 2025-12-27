@@ -299,9 +299,6 @@ io.on('connection', (socket) => {
           io.to(roomCode).emit('game_started', room);
         } catch (e) {
           console.error(`[DEBUG] Error starting Oligarchy:`, e);
-          io.to(roomCode).emit('game_started', room);
-        } catch (e) {
-          console.error(`[DEBUG] Error starting Oligarchy:`, e);
           socket.emit('error', 'Failed to init Oligarchy');
         }
 
