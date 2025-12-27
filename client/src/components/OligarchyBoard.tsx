@@ -31,7 +31,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     const styles = `
         .oligarchy-app {
             width: 100%;
-            height: 100%;
+            flex: 1;
             background: #0d1117;
             color: #e6edf3;
             font-family: 'JetBrains Mono', monospace;
