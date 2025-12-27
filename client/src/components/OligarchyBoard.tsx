@@ -11,7 +11,11 @@ interface OligarchyBoardProps {
 }
 
 export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) => {
-    const game = room.gameState.oligarchy!;
+    // Safety check
+    if (!room.gameState.oligarchy) {
+        return <div style={{ color: 'white', padding: '20px' }}>Loading Oligarchy State...</div>;
+    }
+    const game = room.gameState.oligarchy;
     const playerState = game.players[socket.id];
     const isMyTurn = game.currentTurnPlayerId === socket.id;
 
