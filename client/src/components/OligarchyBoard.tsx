@@ -1,41 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// @ts-ignore
-import useSound from 'use-sound';
-import { OLIGARCHY_BOARD, SECTORS, OligarchyCompany } from '../data/oligarchyData';
+import { OLIGARCHY_BOARD, SECTORS } from '../data/oligarchyData';
 
-// Types
-interface Player {
-    id: string;
-    name: string;
-    avatar: string;
-    score: number;
-    role?: 'player' | 'banker';
-}
-
-interface Room {
-    id: string;
-    players: Player[];
-    gameState: {
-        status: string;
-        oligarchy?: {
-            players: Record<string, {
-                cash: number;
-                position: number;
-                companies: number[];
-                isBankrupt: boolean;
-            }>;
-            companies: Record<number, {
-                ownerId?: string;
-            }>;
-            turnPhase: 'rolling' | 'acting';
-            currentTurnPlayerId: string;
-            activeNewsflash?: { title: string, description: string, type: string } | null;
-            lastRoll?: number[];
-            transactionLog: string[];
-        };
-    };
-}
+import type { Room } from '../types';
 
 interface OligarchyBoardProps {
     room: Room;
@@ -43,13 +10,12 @@ interface OligarchyBoardProps {
     userId: string;
 }
 
-export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket, userId }) => {
+export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) => {
     const game = room.gameState.oligarchy!;
-    const player = room.players.find(p => p.id === socket.id)!;
     const playerState = game.players[socket.id];
     const isMyTurn = game.currentTurnPlayerId === socket.id;
 
-    const [showBuyModal, setShowBuyModal] = useState(false);
+    // const [showBuyModal, setShowBuyModal] = useState(false);
 
     // Sound effects (placeholders)
     // const [playCash] = useSound('/sounds/cash.mp3');
