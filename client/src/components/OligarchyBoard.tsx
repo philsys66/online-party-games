@@ -190,11 +190,20 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                         {/* Active Player Status */}
                         <div style={{ marginBottom: '20px' }}>
                             <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#e6edf3' }}>
                                 {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
                             </div>
-                            <div style={{ fontSize: '0.6rem', color: '#333', marginTop: '5px' }}>
-                                DEBUG: Me={socket.id.substring(0, 4)}... Turn={game.currentTurnPlayerId.substring(0, 4)}... Match={isMyTurn ? 'YES' : 'NO'} Phase={game.turnPhase}
+                            <div style={{
+                                fontSize: '1.2rem',
+                                color: '#2ecc71',
+                                marginTop: '5px',
+                                border: '1px solid #2ecc71',
+                                padding: '5px 10px',
+                                borderRadius: '4px',
+                                display: 'inline-block',
+                                background: 'rgba(46, 204, 113, 0.1)'
+                            }}>
+                                LIQUIDITY: ${game.players[game.currentTurnPlayerId]?.cash || 0}M
                             </div>
                             {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>YOUR TURN</div>}
                         </div>
@@ -262,9 +271,9 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                             exit={{ opacity: 0, y: 50 }}
                             style={{
                                 position: 'absolute',
-                                bottom: '20px',
+                                top: '50%',
                                 left: '50%',
-                                transform: 'translateX(-50%)',
+                                transform: 'translate(-50%, -50%)',
                                 width: '80%',
                                 maxWidth: '600px',
                                 background: '#e74c3c', // Urgent Red
