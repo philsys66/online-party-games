@@ -177,6 +177,22 @@ const Home: React.FC = () => {
                             <div style={{ fontSize: '2rem', color: '#ef4444' }}>🏠</div>
                             <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Tech Capitalist</h3>
                         </div>
+
+                        <div
+                            onClick={() => setSelectedGame('oligarchy')}
+                            className="glass-panel flex-center column"
+                            style={{
+                                width: '100px',
+                                height: '125px',
+                                cursor: 'pointer',
+                                border: selectedGame === 'oligarchy' ? '2px solid #00d2d3' : '1px solid transparent',
+                                transform: selectedGame === 'oligarchy' ? 'scale(1.05)' : 'scale(1)',
+                                transition: 'all 0.3s ease'
+                            }}
+                        >
+                            <div style={{ fontSize: '2rem', color: '#00d2d3' }}>🏙️</div>
+                            <h3 style={{ marginTop: '10px', fontSize: '1rem' }}>Oligarchy</h3>
+                        </div>
                     </div>
 
                     <div className="glass-panel column" style={{ gap: '20px', alignSelf: 'center', width: '100%', maxWidth: '400px' }}>
@@ -214,7 +230,7 @@ const Home: React.FC = () => {
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button onClick={() => setMode('menu')} style={{ flex: 1, background: 'rgba(255,255,255,0.1)' }}>Back</button>
                             <button onClick={handleCreateGame} style={{ flex: 1, background: 'var(--color-primary)' }}>
-                                Start {selectedGame === 'scattergories' ? 'Word Blitz' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : 'Tech Capitalist'}
+                                Start {selectedGame === 'scattergories' ? 'Word Blitz' : selectedGame === 'crossword' ? 'Crossword' : selectedGame === 'charades' ? 'Charades' : selectedGame === 'oligarchy' ? 'Oligarchy' : 'Tech Capitalist'}
                             </button>
                         </div>
                     </div>
