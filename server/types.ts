@@ -102,7 +102,8 @@ export interface GameState {
             isAfk?: boolean
         }>;
         companies: Record<number, {
-            ownerId?: string
+            ownerId?: string;
+            currentValue: number; // Dynamic Market Value
         }>;
         turnPhase: 'rolling' | 'acting';
         currentTurnPlayerId: string;

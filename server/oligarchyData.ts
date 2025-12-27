@@ -8,13 +8,13 @@ export interface OligarchyCompany {
     baseRent: number; // 10%
 }
 
-export const SECTORS: Record<SectorType, { name: string, color: string, range: string }> = {
-    retail: { name: 'Retail', color: '#ff9f43', range: '0-5' },         // Orange
-    energy: { name: 'Energy', color: '#10ac84', range: '6-11' },        // Toxic Green
-    healthcare: { name: 'Healthcare', color: '#ff6b6b', range: '12-17' }, // Red/Pink
-    financial: { name: 'Financial', color: '#feca57', range: '18-23' },   // Gold
-    communications: { name: 'Communications', color: '#54a0ff', range: '24-29' }, // Blue
-    technology: { name: 'Technology', color: '#00d2d3', range: '30-35' }  // Cyan/Electric Blue
+export const SECTORS: Record<SectorType, { name: string, shortName: string, color: string, range: string }> = {
+    retail: { name: 'Retail', shortName: 'RET', color: '#ff9f43', range: '0-5' },         // Orange
+    energy: { name: 'Energy', shortName: 'NRG', color: '#10ac84', range: '6-11' },        // Toxic Green
+    healthcare: { name: 'Healthcare', shortName: 'HLT', color: '#ff6b6b', range: '12-17' }, // Red/Pink
+    financial: { name: 'Financial', shortName: 'FIN', color: '#feca57', range: '18-23' },   // Gold
+    communications: { name: 'Communications', shortName: 'COM', color: '#54a0ff', range: '24-29' }, // Blue
+    technology: { name: 'Technology', shortName: 'TEC', color: '#00d2d3', range: '30-35' }  // Cyan/Electric Blue
 };
 
 export const OLIGARCHY_BOARD: OligarchyCompany[] = [
@@ -70,14 +70,55 @@ export const OLIGARCHY_BOARD: OligarchyCompany[] = [
 export interface NewsflashCard {
     title: string;
     description: string;
-    impact: (gameState: any) => void; // Logic to mutate state, text description mainly used
+    type: string;
+    sectors: SectorType[];
+    valueChange: number; // Multiplier (e.g., 1.2 = +20%)
+    cashEffect?: number; // Dividend/Cost per share held in sector
 }
 
-export const NEWSFLASH_EVENTS = [
-    { title: "Data Breach Scandal!", description: "Communications sector crashed. No rents this round.", type: 'crash', sectors: ['communications'] },
-    { title: "Global Energy Crisis!", description: "Energy rents +50%. Retail rents -10%.", type: 'crisis', sectors: ['energy', 'retail'] },
-    { title: "AI Revolution", description: "Technology shares surge. Dividends paid to owners.", type: 'boom', sectors: ['technology'] },
-    { title: "Pandemic Warning", description: "Healthcare profits up. Retail footfall down.", type: 'shift', sectors: ['healthcare', 'retail'] },
-    { title: "Interest Rate Hike", description: "Financial sector booming. Loans expensive.", type: 'shift', sectors: ['financial'] },
-    { title: "Supply Chain Collapse", description: "Retail and Tech hit hard. Pay maintenance costs.", type: 'crash', sectors: ['retail', 'technology'] }
+export const NEWSFLASH_EVENTS: NewsflashCard[] = [
+    {
+        title: "Data Breach Scandal!",
+        description: "Communications sector crashed. Value -30%.",
+        type: 'crash',
+        sectors: ['communications'],
+        valueChange: 0.7
+    },
+    {
+        title: "Global Energy Crisis!",
+        description: "Energy rents +50%. Retail rents -10%.",
+        type: 'crisis',
+        sectors: ['energy', 'retail'],
+        valueChange: 1.5 // Simplified: Energy booms, logic can handle split if needed but keeping simple for now
+    },
+    {
+        title: "AI Revolution",
+        description: "Technology shares surge +40%. Dividends paid to owners.",
+        type: 'boom',
+        sectors: ['technology'],
+        valueChange: 1.4,
+        cashEffect: 50 // $50M per share dividend
+    },
+    {
+        title: "Pandemic Warning",
+        description: "Healthcare profits up 20%.",
+        type: 'shift',
+        sectors: ['healthcare'],
+        valueChange: 1.2
+    },
+    {
+        title: "Interest Rate Hike",
+        description: "Financial sector booming +25%. Loans expensive.",
+        type: 'shift',
+        sectors: ['financial'],
+        valueChange: 1.25
+    },
+    {
+        title: "Supply Chain Collapse",
+        description: "Retail and Tech hit hard (-20%). Pay maintenance costs.",
+        type: 'crash',
+        sectors: ['retail', 'technology'],
+        valueChange: 0.8,
+        cashEffect: -30 // Pay $30M per share
+    }
 ];

@@ -8,13 +8,13 @@ export interface OligarchyCompany {
     baseRent: number; // 10%
 }
 
-export const SECTORS: Record<SectorType, { name: string, color: string, range: string }> = {
-    retail: { name: 'Retail', color: '#ff9f43', range: '0-5' },         // Orange
-    energy: { name: 'Energy', color: '#10ac84', range: '6-11' },        // Toxic Green
-    healthcare: { name: 'Healthcare', color: '#ff6b6b', range: '12-17' }, // Red/Pink
-    financial: { name: 'Financial', color: '#feca57', range: '18-23' },   // Gold
-    communications: { name: 'Communications', color: '#54a0ff', range: '24-29' }, // Blue
-    technology: { name: 'Technology', color: '#00d2d3', range: '30-35' }  // Cyan/Electric Blue
+export const SECTORS: Record<SectorType, { name: string, shortName: string, color: string, range: string }> = {
+    retail: { name: 'Retail', shortName: 'RET', color: '#ff9f43', range: '0-5' },         // Orange
+    energy: { name: 'Energy', shortName: 'NRG', color: '#10ac84', range: '6-11' },        // Toxic Green
+    healthcare: { name: 'Healthcare', shortName: 'HLT', color: '#ff6b6b', range: '12-17' }, // Red/Pink
+    financial: { name: 'Financial', shortName: 'FIN', color: '#feca57', range: '18-23' },   // Gold
+    communications: { name: 'Communications', shortName: 'COM', color: '#54a0ff', range: '24-29' }, // Blue
+    technology: { name: 'Technology', shortName: 'TEC', color: '#00d2d3', range: '30-35' }  // Cyan/Electric Blue
 };
 
 export const OLIGARCHY_BOARD: OligarchyCompany[] = [
