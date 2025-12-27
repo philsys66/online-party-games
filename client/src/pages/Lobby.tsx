@@ -95,7 +95,7 @@ const Lobby: React.FC = () => {
             <div className="glass-panel" style={{ marginTop: '20px', display: room.gameType === 'crossword' || room.gameType === 'monopoly' ? 'none' : 'block' }}>
                 <h3>Game Settings</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '10px' }}>
-                    {room.gameType !== 'charades' && (
+                    {room.gameType !== 'charades' && room.gameType !== 'oligarchy' && (
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', color: 'var(--color-text-dim)' }}>Timer</label>
                             {isHost ? (
@@ -113,7 +113,7 @@ const Lobby: React.FC = () => {
                             )}
                         </div>
                     )}
-                    {room.gameType !== 'charades' && (
+                    {room.gameType !== 'charades' && room.gameType !== 'oligarchy' && (
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', color: 'var(--color-text-dim)' }}>Rounds</label>
                             {isHost ? (
