@@ -124,15 +124,37 @@ const GameRoom: React.FC = () => {
     };
 
 
-
-    // Full Screen Overrides for certain games that manage their own layout
-    if (room.gameType === 'oligarchy') {
-        return <OligarchyBoard room={room} socket={socket} userId={socket.id} />;
-    }
+    // Full Screen Overrides:
+    // Oligarchy needs full width/height but uses the standard header now.
+    // We will adjust the container style dynamically.
+    const isFullWidthGame = room.gameType === 'oligarchy';
 
     return (
-        <div className="container column" style={{ paddingBottom: '100px', paddingTop: '80px' }}>
-            <header className="glass-panel column" style={{ position: 'sticky', top: '10px', zIndex: 10, padding: '10px 20px' }}>
+        <div
+            className={`container column ${isFullWidthGame ? 'full-width-game' : ''}`}
+            style={{
+                paddingBottom: isFullWidthGame ? '0' : '100px',
+                paddingTop: isFullWidthGame ? '0' : '80px',
+                width: isFullWidthGame ? '100vw' : '100%',
+                maxWidth: isFullWidthGame ? 'none' : undefined,
+                height: isFullWidthGame ? '100vh' : 'auto',
+                overflow: isFullWidthGame ? 'hidden' : 'visible'
+            }}
+        >
+            <header
+                className="glass-panel column"
+                style={{
+                    position: isFullWidthGame ? 'relative' : 'sticky',
+                    top: isFullWidthGame ? '0' : '10px',
+                    zIndex: 10,
+                    padding: '10px 20px',
+                    margin: isFullWidthGame ? '0' : undefined,
+                    borderRadius: isFullWidthGame ? '0' : undefined,
+                    borderLeft: isFullWidthGame ? 'none' : undefined,
+                    borderRight: isFullWidthGame ? 'none' : undefined,
+                    borderTop: isFullWidthGame ? 'none' : undefined,
+                }}
+            >
                 <GameMenu />
                 <div className="flex-center" style={{ justifyContent: 'space-between', width: '100%' }}>
                     {/* Left Side (Letter or Charades Counter) */}
@@ -180,6 +202,9 @@ const GameRoom: React.FC = () => {
                                     {formatTime(elapsedTime)}
                                 </span>
                             </>
+                        ) : room.gameType === 'oligarchy' ? (
+                            // Oligarchy shows nothing here or maybe net worth? For now, keep it clean.
+                            <span style={{ fontSize: '1.2rem', color: 'var(--color-text-dim)', opacity: 0.5 }}>-</span>
                         ) : (
                             <span style={{ fontSize: '1.2rem', color: 'var(--color-text-dim)', opacity: 0.5 }}>-</span>
                         )}
