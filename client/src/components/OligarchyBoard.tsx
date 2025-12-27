@@ -145,126 +145,127 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                             );
                         })}
                     </div>
-
-                    {/* Right Panel: Controls & Logs (Desktop) */}
-                    <div style={{ width: '300px', minWidth: '300px', background: '#0d1117', borderLeft: '1px solid #30363d', padding: '20px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100%', overflowY: 'auto' }}>
-                        {/* Active Player Status */}
-                        <div style={{ marginBottom: '20px' }}>
-                            <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
-                            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-                                {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
-                            </div>
-                            <div style={{ fontSize: '0.6rem', color: '#333', marginTop: '5px' }}>
-                                DEBUG: Me={socket.id.substring(0, 4)}... Turn={game.currentTurnPlayerId.substring(0, 4)}... Match={isMyTurn ? 'YES' : 'NO'} Phase={game.turnPhase}
-                            </div>
-                            {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>YOUR TURN</div>}
-                        </div>
-
-                        {/* Controls */}
-                        {isMyTurn && (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                                {game.turnPhase === 'rolling' && (
-                                    <button
-                                        onClick={() => socket.emit('oligarchy_roll', room.id)}
-                                        style={btnStyle('#2ecc71')}
-                                    >
-                                        EXECUTE MOVEMENT (ROLL)
-                                    </button>
-                                )}
-
-                                {game.turnPhase === 'acting' && (
-                                    <>
-                                        {/* Check if current tile is unowned and buyable */}
-                                        {(() => {
-                                            const pos = playerState.position;
-                                            const companyState = game.companies[pos];
-                                            const company = OLIGARCHY_BOARD[pos];
-                                            if (!companyState.ownerId && playerState.cash >= company.value) {
-                                                return (
-                                                    <button
-                                                        onClick={() => socket.emit('oligarchy_buy', room.id)}
-                                                        style={btnStyle('#00d2d3')}
-                                                    >
-                                                        ACQUIRE ASSET (${company.value})
-                                                    </button>
-                                                );
-                                            }
-                                            return null;
-                                        })()}
-
-                                        <button
-                                            onClick={() => socket.emit('oligarchy_end_turn', room.id)}
-                                            style={btnStyle('#ff6b6b')}
-                                        >
-                                            END FISCAL PERIOD
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Newsfeed Log */}
-                        <div style={{ flex: 1, background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem' }}>
-                            {game.transactionLog.map((log, i) => (
-                                <div key={i} style={{ marginBottom: '5px', borderBottom: '1px solid #333', paddingBottom: '2px' }}>
-                                    <span style={{ color: '#00d2d3' }}>{'>'}</span> {log}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
 
-                {/* Newsflash Overlay */}
-                <AnimatePresence>
-                    {game.activeNewsflash && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 50 }}
-                            style={{
-                                position: 'absolute',
-                                bottom: '20px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '80%',
-                                maxWidth: '600px',
-                                background: '#e74c3c', // Urgent Red
-                                color: 'white',
-                                padding: '20px',
-                                borderRadius: '8px',
-                                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-                                zIndex: 100,
-                                textAlign: 'center'
-                            }}
-                        >
-                            <h2 style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase' }}>🔔 GLOBAL NEWSFLASH</h2>
-                            <h3 style={{ margin: '10px 0', fontSize: '1.2rem' }}>{game.activeNewsflash.title}</h3>
-                            <p style={{ fontSize: '1rem' }}>{game.activeNewsflash.description}</p>
-                        </motion.div>
+                {/* Right Panel: Controls & Logs (Desktop) */}
+                <div style={{ width: '300px', minWidth: '300px', background: '#0d1117', borderLeft: '1px solid #30363d', padding: '20px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100%', overflowY: 'auto' }}>
+                    {/* Active Player Status */}
+                    <div style={{ marginBottom: '20px' }}>
+                        <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
+                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                            {room.players.find(p => p.id === game.currentTurnPlayerId)?.name}
+                        </div>
+                        <div style={{ fontSize: '0.6rem', color: '#333', marginTop: '5px' }}>
+                            DEBUG: Me={socket.id.substring(0, 4)}... Turn={game.currentTurnPlayerId.substring(0, 4)}... Match={isMyTurn ? 'YES' : 'NO'} Phase={game.turnPhase}
+                        </div>
+                        {isMyTurn && <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>YOUR TURN</div>}
+                    </div>
+
+                    {/* Controls */}
+                    {isMyTurn && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                            {game.turnPhase === 'rolling' && (
+                                <button
+                                    onClick={() => socket.emit('oligarchy_roll', room.id)}
+                                    style={btnStyle('#2ecc71')}
+                                >
+                                    EXECUTE MOVEMENT (ROLL)
+                                </button>
+                            )}
+
+                            {game.turnPhase === 'acting' && (
+                                <>
+                                    {/* Check if current tile is unowned and buyable */}
+                                    {(() => {
+                                        const pos = playerState.position;
+                                        const companyState = game.companies[pos];
+                                        const company = OLIGARCHY_BOARD[pos];
+                                        if (!companyState.ownerId && playerState.cash >= company.value) {
+                                            return (
+                                                <button
+                                                    onClick={() => socket.emit('oligarchy_buy', room.id)}
+                                                    style={btnStyle('#00d2d3')}
+                                                >
+                                                    ACQUIRE ASSET (${company.value})
+                                                </button>
+                                            );
+                                        }
+                                        return null;
+                                    })()}
+
+                                    <button
+                                        onClick={() => socket.emit('oligarchy_end_turn', room.id)}
+                                        style={btnStyle('#ff6b6b')}
+                                    >
+                                        END FISCAL PERIOD
+                                    </button>
+                                </>
+                            )}
+                        </div>
                     )}
-                </AnimatePresence>
+
+                    {/* Newsfeed Log */}
+                    <div style={{ flex: 1, background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                        {game.transactionLog.map((log, i) => (
+                            <div key={i} style={{ marginBottom: '5px', borderBottom: '1px solid #333', paddingBottom: '2px' }}>
+                                <span style={{ color: '#00d2d3' }}>{'>'}</span> {log}
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
-            );
+
+            {/* Newsflash Overlay */}
+            <AnimatePresence>
+                {game.activeNewsflash && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 50 }}
+                        style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            width: '80%',
+                            maxWidth: '600px',
+                            background: '#e74c3c', // Urgent Red
+                            color: 'white',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                            zIndex: 100,
+                            textAlign: 'center'
+                        }}
+                    >
+                        <h2 style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase' }}>🔔 GLOBAL NEWSFLASH</h2>
+                        <h3 style={{ margin: '10px 0', fontSize: '1.2rem' }}>{game.activeNewsflash.title}</h3>
+                        <p style={{ fontSize: '1rem' }}>{game.activeNewsflash.description}</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
 };
 
 // Helper for consistent avatar colors
 const stringToColor = (str: string) => {
-                let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-            const c = (hash & 0x00ffffff).toString(16).toUpperCase();
-            return '#' + '00000'.substring(0, 6 - c.length) + c;
+    const c = (hash & 0x00ffffff).toString(16).toUpperCase();
+    return '#' + '00000'.substring(0, 6 - c.length) + c;
 };
 
 const btnStyle = (color: string) => ({
-                background: color,
-            color: '#000',
-            border: 'none',
-            padding: '12px',
-            borderRadius: '4px',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            fontFamily: "'JetBrains Mono', monospace",
-            textTransform: 'uppercase' as const
+    background: color,
+    color: '#000',
+    border: 'none',
+    padding: '12px',
+    borderRadius: '4px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    fontFamily: "'JetBrains Mono', monospace",
+    textTransform: 'uppercase' as const
 });
