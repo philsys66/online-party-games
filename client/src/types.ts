@@ -97,9 +97,17 @@ export interface GameState {
             ownerId?: string;
             currentValue: number;
         }>;
-        turnPhase: 'rolling' | 'acting';
+        turnPhase: 'rolling' | 'acting' | 'auction';
         currentTurnPlayerId: string;
         activeNewsflash?: { title: string, description: string, type: string, sectors: string[] } | null;
+        auction?: {
+            companyId: number;
+            currentBid: number;
+            highestBidderId?: string;
+            sellerId: string;
+            timeLeft: number;
+            participants: string[];
+        } | null;
         lastRoll?: number[];
         transactionLog: string[];
         lastActionTime?: number;
