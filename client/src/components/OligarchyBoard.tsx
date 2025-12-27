@@ -68,7 +68,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             </div>
 
             {/* Main Content: Grid + Dashboard */}
-            <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+            <div style={{ flex: 1, display: 'flex', overflow: 'hidden', flexWrap: 'wrap' }}>
 
                 {/* 6x6 Grid Board */}
                 <div style={{
@@ -140,7 +140,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                 </div>
 
                 {/* Right Panel: Controls & Logs (Desktop) */}
-                <div style={{ width: '300px', background: '#0d1117', borderLeft: '1px solid #30363d', padding: '20px', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ width: '300px', minWidth: '300px', background: '#0d1117', borderLeft: '1px solid #30363d', padding: '20px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100%', overflowY: 'auto' }}>
                     {/* Active Player Status */}
                     <div style={{ marginBottom: '20px' }}>
                         <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>CURRENT MARKET MOVER</div>
