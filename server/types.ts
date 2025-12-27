@@ -1,4 +1,4 @@
-export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly';
+export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly' | 'oligarchy';
 
 export interface Room {
     id: string;
@@ -91,5 +91,30 @@ export interface GameState {
         transactionLog: string[],
         lastActionTime?: number,
         currentCard?: { text: string, type: 'chance' | 'chest', ownerId: string } | null
+    };
+    // Oligarchy
+    oligarchy?: {
+        players: Record<string, {
+            cash: number,         // Start $1500
+            position: number,     // 0-35
+            companies: number[],  // IDs of owned companies
+            isBankrupt: boolean,
+            isAfk?: boolean
+        }>;
+        companies: Record<number, {
+            ownerId?: string
+        }>;
+        turnPhase: 'rolling' | 'acting';
+        currentTurnPlayerId: string;
+        roundCount: number;       // For Newsflash trigger
+        activeNewsflash?: {
+            title: string;
+            description: string;
+            type: string;
+            sectors: string[]; // Affected sectors
+        } | null;
+        lastRoll?: number[];
+        transactionLog: string[];
+        lastActionTime?: number;
     };
 }
