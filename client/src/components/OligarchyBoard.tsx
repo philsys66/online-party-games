@@ -183,7 +183,43 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                 );
                             })}
 
-
+                            {/* Newsflash Overlay - Inside Grid now */}
+                            <AnimatePresence>
+                                {game.activeNewsflash && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            zIndex: 100,
+                                            pointerEvents: 'none'
+                                        }}
+                                    >
+                                        <div style={{
+                                            width: '90%',
+                                            maxWidth: '400px',
+                                            background: 'rgba(231, 76, 60, 0.95)', // Urgent Red with slight transparency
+                                            backdropFilter: 'blur(5px)',
+                                            color: 'white',
+                                            padding: '20px',
+                                            borderRadius: '8px',
+                                            boxShadow: '0 10px 30px rgba(0,0,0,0.8)',
+                                            textAlign: 'center',
+                                            border: '2px solid white',
+                                            pointerEvents: 'auto'
+                                        }}>
+                                            <h2 style={{ margin: 0, fontSize: '1.5rem', textTransform: 'uppercase' }}>🔔 NEWSFLASH</h2>
+                                            <h3 style={{ margin: '10px 0', fontSize: '1.2rem', fontWeight: 'bold' }}>{game.activeNewsflash.title}</h3>
+                                            <p style={{ fontSize: '1rem' }}>{game.activeNewsflash.description}</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
 
