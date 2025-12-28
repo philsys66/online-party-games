@@ -61,7 +61,7 @@ const handleOligarchyRoll = (room, playerId) => {
         return;
     // Movement
     const oldPos = playerState.position;
-    playerState.position = (playerState.position + total) % 36;
+    playerState.position = (playerState.position + total) % 30; // 30-space board now
     game.lastRoll = [die1, die2];
     // Pass Start Bonus? (Not explicitly in rules, but standard "Loop" usually implies it)
     // "Players start with $1,500. Roll 2 dice to move through the board."
@@ -114,7 +114,18 @@ const handleTileArrival = (room, playerId) => {
             owner.cash += rent;
             const payerName = (_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name;
             const ownerName = (_b = room.players.find(p => p.id === companyState.ownerId)) === null || _b === void 0 ? void 0 : _b.name;
-            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent} fee to ${ownerName} for ${company.name}.`);
+            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`);
+            // Emit Rent Alert
+            // We need to access IO to emit, but this function is pure logic usually?
+            // Actually handleOligarchyRoll calls this. We can attach the alert to the game state or return it?
+            // Let's attach a temporary alert object to the game state, which the client can read and clear?
+            // Or better: just assume the client parses the log? No, user wants popup.
+            // Let's add an 'alert' field to the game state that lasts for one turn or is cleared by client.
+            game.activeAlert = {
+                type: 'rent',
+                message: `You landed on ${company.name}! You paid ${ownerName} $${rent}M in fees.`,
+                playerId: playerId // Target player
+            };
         }
     }
     else if (!companyState.ownerId) {
@@ -143,10 +154,10 @@ const calculateSubscriptionFee = (room, companyId) => {
     // Or linear?
     // Let's implement steps as defined (thresholds).
     let percentage = 0.10;
-    if (ownedInSector >= 6)
-        percentage = 1.0;
+    if (ownedInSector >= 5)
+        percentage = 1.0; // Monopoly (5 items)
     else if (ownedInSector >= 3)
-        percentage = 0.30;
+        percentage = 0.30; // Stronghold (3 items)
     return Math.floor(companyState.currentValue * percentage);
 };
 exports.calculateSubscriptionFee = calculateSubscriptionFee;

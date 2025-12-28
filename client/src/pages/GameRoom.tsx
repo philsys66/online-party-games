@@ -178,9 +178,9 @@ const GameRoom: React.FC = () => {
                                     style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid var(--color-accent)', objectFit: 'cover' }}
                                 />
                                 <div className="column" style={{ gap: '2px', alignItems: 'flex-start' }}>
-                                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>YOU</span>
-                                    <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{room.players.find(p => p.id === socket.id)?.name}</span>
-                                </div>
+                                    {/*       <span style={{ fontSize: '0.8rem', color: 'var(--color-text-dim)' }}>YOU</span>
+                                   <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{room.players.find(p => p.id === socket.id)?.name}</span>
+                           */}     </div>
                             </div>
                         )}
                     </div>
