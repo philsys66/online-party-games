@@ -557,6 +557,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                     if (category === 'energy') imgSrc = 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=150&q=80'; // Lightbulb/Idea
                                     if (category === 'healthcare') imgSrc = 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=150&q=80'; // Medical (Updated)
                                     if (category === 'financial' || category === 'financials') imgSrc = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=150&q=80'; // Market Chart (Verified)
+                                    // Actually, let's swap Financial to be safe
+                                    if (category === 'financial' || category === 'financials') imgSrc = 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=150&q=80'; // Stocks/Candles
                                     if (category === 'communications') imgSrc = 'https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=150&q=80'; // Radio/Mic
                                     // Special
                                     if (category === 'pandemic') imgSrc = 'https://images.unsplash.com/photo-1584483766114-2cea6fac256d?auto=format&fit=crop&w=150&q=80'; // Biohazard/Virus Concept
