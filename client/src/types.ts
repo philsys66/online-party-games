@@ -4,6 +4,7 @@ export interface Player {
     name: string;
     avatar?: string;
     score: number;
+    color?: string; // Assigned game color
     role?: 'player' | 'banker';
 }
 
