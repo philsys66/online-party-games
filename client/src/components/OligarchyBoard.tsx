@@ -114,7 +114,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             }
             .oligarchy-control-panel {
                 width: 100%;
-                height: 40%; /* Panel takes bottom 40% */
+                height: 50%; /* Panel takes bottom 50% */
                 min-height: 200px;
                 border-left: none;
                 border-top: 1px solid #30363d;
@@ -429,7 +429,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                         )}
 
                         {/* Newsfeed Log */}
-                        <div style={{ height: '30%', minHeight: '150px', marginTop: 'auto', background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem' }}>
+                        <div style={{ height: '25%', minHeight: '100px', maxHeight: '150px', marginTop: '10px', background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', borderTop: '1px solid #333' }}>
                             {game.transactionLog.map((log, i) => (
                                 <div key={i} style={{ marginBottom: '5px', borderBottom: '1px solid #333', paddingBottom: '2px' }}>
                                     <span style={{ color: '#00d2d3' }}>{'>'}</span> {log}

@@ -126,6 +126,16 @@ const handleTileArrival = (room, playerId) => {
                 message: `You landed on ${company.name}! You paid ${ownerName} $${rent}M in fees.`,
                 playerId: playerId // Target player
             };
+            // Auto-clear alert after 5 seconds
+            setTimeout(() => {
+                if (game.activeAlert && game.activeAlert.playerId === playerId) {
+                    game.activeAlert = null;
+                    // We might need to trigger an update if the loop doesn't catch it immediately,
+                    // but the game loop or next action will likely sync it.
+                    // Ideally server.ts pushes updates on change, or on tick.
+                    // The tick happens every second, so it will be picked up.
+                }
+            }, 5000);
         }
     }
     else if (!companyState.ownerId) {
