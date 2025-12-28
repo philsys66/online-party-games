@@ -189,7 +189,7 @@ const purchaseOligarchyCompany = (room, playerId) => {
     if (!player.companies.includes(company.id)) {
         player.companies.push(company.id);
     }
-    addNewsItem(game, "Acquisition Update", `${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} acquired ${company.name} for $${companyState.currentValue}M.`, "finance");
+    addNewsItem(game, "Acquisition Update", `${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} acquired ${company.name} for $${companyState.currentValue}M.`, company.sector);
     checkOligarchVictory(room, playerId);
 };
 exports.purchaseOligarchyCompany = purchaseOligarchyCompany;
@@ -227,7 +227,9 @@ const triggerNewsflash = (room) => {
         type: event.type,
         sectors: event.sectors
     };
-    game.transactionLog.unshift(`[NEWSFLASH] ${event.title.toUpperCase()}: ${event.description}`);
+    // Log it
+    const category = event.title.toLowerCase().includes('pandemic') ? 'pandemic' : 'news';
+    addNewsItem(game, "BREAKING NEWS", `${event.title.toUpperCase()}: ${event.description}`, category);
     // APPLY ECONOMIC EFFECTS
     const affectedSectors = event.sectors;
     const allCompanies = oligarchyData_1.OLIGARCHY_BOARD;
