@@ -105,7 +105,8 @@ io.on('connection', (socket) => {
                     userId: data.userId, // Host Persistent ID
                     name: data.playerName,
                     avatar: data.avatar,
-                    score: 0
+                    score: 0,
+                    role: 'player' // Default role for host
                 }],
             gameState: gameState,
             gameConfig: {
