@@ -14,6 +14,8 @@ const initializeOligarchyGame = (room) => {
         transactionLog: [],
         lastActionTime: Date.now()
     };
+    // Initial News
+    addNewsItem(room.gameState.oligarchy, "Market Opens", "The Oligarchy initiates trading. All assets are up for grabs.", "finance");
     console.log(`[OligarchyLogic] Initializing for ${room.players.length} players.`);
     // Only add active players
     const activePlayers = room.players.filter(p => p.role !== 'banker');
@@ -68,9 +70,7 @@ const handleOligarchyRoll = (room, playerId) => {
     // Assuming standard Monopoly-style GO bonus for now ($200 like typical?). Let's say $200.
     if (playerState.position < oldPos) {
         playerState.cash += 200;
-        game.transactionLog.unshift(`[CYCLE] ${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} completed a global cycle. Income +$200M.`);
-        if (game.transactionLog.length > 50)
-            game.transactionLog.pop();
+        addNewsItem(game, "Global Cycle Complete", `${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} completed a global cycle. Income +$200M.`, "cycle");
     }
     game.turnPhase = 'acting';
     // Handle Tile Actions
@@ -98,7 +98,7 @@ const handleTileArrival = (room, playerId) => {
                 // "Subscription fees cannot be collected" or reduced
                 if (game.activeNewsflash.description.includes('cannot be collected')) {
                     rent = 0;
-                    game.transactionLog.unshift(`[NEWS] Fees suspended for ${company.name} due to ${game.activeNewsflash.title}!`);
+                    addNewsItem(game, "Fees Suspended", `Fees suspended for ${company.name} due to ${game.activeNewsflash.title}!`, "news");
                 }
             }
             if (game.activeNewsflash.type === 'crisis' && game.activeNewsflash.sectors.includes(company.sector)) {
@@ -115,7 +115,7 @@ const handleTileArrival = (room, playerId) => {
             owner.cash += rent;
             const payerName = (_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name;
             const ownerName = (_b = room.players.find(p => p.id === companyState.ownerId)) === null || _b === void 0 ? void 0 : _b.name;
-            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`);
+            addNewsItem(game, "Subscription Paid", `${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`, "rent");
             // Emit Rent Alert
             // We need to access IO to emit, but this function is pure logic usually?
             // Actually handleOligarchyRoll calls this. We can attach the alert to the game state or return it?
@@ -348,3 +348,15 @@ const checkOligarchyAuctionTick = (room) => {
     }
 };
 exports.checkOligarchyAuctionTick = checkOligarchyAuctionTick;
+// Helper to add news
+function addNewsItem(game, headline, body, category) {
+    game.transactionLog.unshift({
+        id: Math.random().toString(36).substr(2, 9),
+        headline,
+        body,
+        imageCategory: category,
+        timestamp: Date.now()
+    });
+    if (game.transactionLog.length > 50)
+        game.transactionLog.pop();
+}

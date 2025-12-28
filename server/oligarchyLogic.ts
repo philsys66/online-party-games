@@ -376,3 +376,15 @@ export const checkOligarchyAuctionTick = (room: Room) => {
         endOligarchyAuction(room);
     }
 };
+
+// Helper to add news
+function addNewsItem(game: any, headline: string, body: string, category: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding') {
+    game.transactionLog.unshift({
+        id: Math.random().toString(36).substr(2, 9),
+        headline,
+        body,
+        imageCategory: category,
+        timestamp: Date.now()
+    });
+    if (game.transactionLog.length > 50) game.transactionLog.pop();
+}
