@@ -473,7 +473,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                 pointerEvents: 'none'
                             }}
                         >
-                            <div style={{ display: 'flex', gap: '30px' }}>
+                            <div style={{ display: 'flex', gap: '80px' }}>
                                 <Dice3D value={activeRoll.die1} />
                                 <Dice3D value={activeRoll.die2} />
                             </div>

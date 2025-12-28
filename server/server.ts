@@ -784,7 +784,8 @@ io.on('connection', (socket) => {
     const room = rooms[roomCode];
     if (room && room.gameState.oligarchy) {
       const roll = handleOligarchyRoll(room, socket.id);
-      io.to(roomCode).emit('room_update', room);
+
+      // Emit Dice Roll Event immediately
       if (roll) {
         io.to(roomCode).emit('oligarchy_dice_rolled', {
           die1: roll.die1,
@@ -792,6 +793,11 @@ io.on('connection', (socket) => {
           playerId: socket.id
         });
       }
+
+      // Delay state update (movement) until animation finishes (3s)
+      setTimeout(() => {
+        io.to(roomCode).emit('room_update', room);
+      }, 3000);
     }
   });
 

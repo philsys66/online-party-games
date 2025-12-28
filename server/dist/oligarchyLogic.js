@@ -68,13 +68,14 @@ const handleOligarchyRoll = (room, playerId) => {
     // Assuming standard Monopoly-style GO bonus for now ($200 like typical?). Let's say $200.
     if (playerState.position < oldPos) {
         playerState.cash += 200;
-        game.transactionLog.unshift(`[CYCLE] ${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} completed a global cycle. Income +$200.`);
+        game.transactionLog.unshift(`[CYCLE] ${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} completed a global cycle. Income +$200M.`);
         if (game.transactionLog.length > 50)
             game.transactionLog.pop();
     }
     game.turnPhase = 'acting';
     // Handle Tile Actions
     handleTileArrival(room, playerId);
+    return { die1, die2 };
 };
 exports.handleOligarchyRoll = handleOligarchyRoll;
 const handleTileArrival = (room, playerId) => {

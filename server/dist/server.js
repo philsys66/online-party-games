@@ -694,8 +694,15 @@ io.on('connection', (socket) => {
     socket.on('oligarchy_roll', (roomCode) => {
         const room = rooms[roomCode];
         if (room && room.gameState.oligarchy) {
-            (0, oligarchyLogic_1.handleOligarchyRoll)(room, socket.id);
+            const roll = (0, oligarchyLogic_1.handleOligarchyRoll)(room, socket.id);
             io.to(roomCode).emit('room_update', room);
+            if (roll) {
+                io.to(roomCode).emit('oligarchy_dice_rolled', {
+                    die1: roll.die1,
+                    die2: roll.die2,
+                    playerId: socket.id
+                });
+            }
         }
     });
     socket.on('oligarchy_buy', (roomCode) => {
