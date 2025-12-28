@@ -680,25 +680,49 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                 fontWeight: 'bold',
                                 borderTop: mobileTab === 'board' ? '3px solid #2ecc71' : '3px solid transparent',
                                 cursor: 'pointer',
-                                fontSize: '0.9rem'
+                                fontSize: '0.8rem',
+                                padding: '5px'
                             }}
                         >
                             TRADING FLOOR
                         </button>
                         <button
-                            onClick={() => setMobileTab('controls')}
+                            onClick={() => {
+                                setMobileTab('controls');
+                                setActiveTab('market');
+                            }}
                             style={{
                                 flex: 1,
                                 background: 'transparent',
                                 border: 'none',
-                                color: mobileTab === 'controls' ? '#00d2d3' : '#8b949e',
+                                color: mobileTab === 'controls' && activeTab === 'market' ? '#00d2d3' : '#8b949e',
                                 fontWeight: 'bold',
-                                borderTop: mobileTab === 'controls' ? '3px solid #00d2d3' : '3px solid transparent',
+                                borderTop: mobileTab === 'controls' && activeTab === 'market' ? '3px solid #00d2d3' : '3px solid transparent',
                                 cursor: 'pointer',
-                                fontSize: '0.9rem'
+                                fontSize: '0.8rem',
+                                padding: '5px'
                             }}
                         >
-                            MARKET & ASSETS
+                            MARKET
+                        </button>
+                        <button
+                            onClick={() => {
+                                setMobileTab('controls');
+                                setActiveTab('assets');
+                            }}
+                            style={{
+                                flex: 1,
+                                background: 'transparent',
+                                border: 'none',
+                                color: mobileTab === 'controls' && activeTab === 'assets' ? '#f1c40f' : '#8b949e',
+                                fontWeight: 'bold',
+                                borderTop: mobileTab === 'controls' && activeTab === 'assets' ? '3px solid #f1c40f' : '3px solid transparent',
+                                cursor: 'pointer',
+                                fontSize: '0.8rem',
+                                padding: '5px'
+                            }}
+                        >
+                            ASSETS
                         </button>
                     </div>
                 )}
