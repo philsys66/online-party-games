@@ -65,6 +65,24 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             box-sizing: border-box;
             border-radius: 8px; /* Slight rounding to match theme */
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative; /* Ensure absolute children are contained */
+        }
+
+        /* ... existing styles ... */
+
+        /* Mobile Layout */
+        @media (max-width: 768px) {
+            .oligarchy-app {
+                /* On mobile, we want to maximize space but respect the header */
+                /* The GameRoom header is ~80px + padding */
+                height: calc(100vh - 100px) !important; 
+                border-radius: 0;
+            }
+            .oligarchy-main-layout {
+                flex-direction: column;
+                padding-bottom: 60px; /* Space for Nav Bar */
+            }
+            /* ... */
         }
 
         .oligarchy-main-layout {
@@ -499,7 +517,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                 {/* Mobile Navigation Bar */}
                 {isMobile && (
                     <div style={{
-                        position: 'absolute',
+                        position: 'fixed', // Fixed to viewport to avoid scroll issues
                         bottom: 0,
                         left: 0,
                         right: 0,
@@ -507,7 +525,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                         background: '#0d1117',
                         borderTop: '1px solid #30363d',
                         display: 'flex',
-                        zIndex: 200
+                        zIndex: 1000, // Very high z-index
+                        boxShadow: '0 -5px 20px rgba(0,0,0,0.5)'
                     }}>
                         <button
                             onClick={() => setMobileTab('board')}
