@@ -1,5 +1,13 @@
 export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly' | 'oligarchy';
 
+export interface NewsItem {
+    id: string;
+    headline: string;
+    body: string;
+    imageCategory: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding';
+    timestamp: number;
+}
+
 export interface Room {
     id: string;
     gameType: GameType;

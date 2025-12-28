@@ -9,9 +9,13 @@ export const initializeOligarchyGame = (room: Room) => {
         currentTurnPlayerId: '', // Set below
         roundCount: 1,
         activeNewsflash: null,
+        activeNewsflash: null,
         transactionLog: [],
         lastActionTime: Date.now()
     };
+
+    // Initial News
+    addNewsItem(room.gameState.oligarchy, "Market Opens", "The Oligarchy initiates trading. All assets are up for grabs.", "finance");
 
     console.log(`[OligarchyLogic] Initializing for ${room.players.length} players.`);
 
