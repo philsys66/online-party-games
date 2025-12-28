@@ -487,13 +487,130 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                             </div>
                         )}
 
-                        {/* Newsfeed Log */}
-                        <div style={{ height: '25%', minHeight: '100px', maxHeight: '150px', marginTop: '10px', background: '#000', borderRadius: '4px', padding: '10px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', borderTop: '1px solid #333' }}>
-                            {game.transactionLog.map((log, i) => (
-                                <div key={i} style={{ marginBottom: '5px', borderBottom: '1px solid #333', paddingBottom: '2px' }}>
-                                    <span style={{ color: '#00d2d3' }}>{'>'}</span> {log}
+                        {/* Newsfeed Log (Oligarchy Times) */}
+                        <div style={{
+                            flex: 1,
+                            marginTop: '10px',
+                            background: '#fdfdfd',
+                            borderRadius: '4px',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                        }}>
+                            {/* BBC-style Header */}
+                            <div style={{
+                                background: '#b80000', // BBC Red
+                                color: 'white',
+                                padding: '8px 12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                                zIndex: 10,
+                                flexShrink: 0
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{
+                                        fontWeight: 900,
+                                        fontSize: '1rem',
+                                        letterSpacing: '-0.5px',
+                                        background: 'white',
+                                        color: '#b80000',
+                                        padding: '1px 4px',
+                                        lineHeight: '1'
+                                    }}>
+                                        NEWS
+                                    </div>
+                                    <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>OLIGARCHY TIMES</span>
                                 </div>
-                            ))}
+                                <div style={{ fontSize: '0.7rem', opacity: 0.9 }}>LIVE</div>
+                            </div>
+
+                            <div style={{
+                                flex: 1,
+                                overflowY: 'auto',
+                                padding: '0',
+                                background: '#fff'
+                            }}>
+                                {game.transactionLog.map((item: any, i: number) => {
+                                    // Detect legacy string logs vs new objects
+                                    const isLegacy = typeof item === 'string';
+                                    const headline = isLegacy ? "Update" : item.headline;
+                                    const body = isLegacy ? item : item.body;
+                                    const category = isLegacy ? 'news' : item.imageCategory;
+                                    const time = isLegacy ? '' : new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                                    // Mock Images based on category
+                                    let imgSrc = 'https://api.dicebear.com/7.x/identicon/svg?seed=news'; // Fallback
+                                    if (category === 'finance') imgSrc = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'rent') imgSrc = 'https://images.unsplash.com/photo-1580519542095-20d0f417578b?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'war') imgSrc = 'https://images.unsplash.com/photo-1533552097-75927376c72e?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'tech') imgSrc = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'bankruptcy') imgSrc = 'https://images.unsplash.com/photo-1596265371388-43edb10653f6?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'cycle') imgSrc = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=100&q=80';
+                                    if (category === 'bidding') imgSrc = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=100&q=80';
+
+                                    return (
+                                        <div key={i} style={{
+                                            borderBottom: '1px solid #e2e2e2',
+                                            padding: '12px',
+                                            display: 'flex',
+                                            gap: '10px',
+                                            background: i === 0 ? '#fff0f0' : 'white', // Highlight newest
+                                            animation: i === 0 ? 'fadeIn 0.5s ease-out' : 'none'
+                                        }}>
+                                            {/* Thumbnail */}
+                                            <div style={{
+                                                width: '60px',
+                                                height: '45px',
+                                                background: '#eee',
+                                                backgroundImage: `url(${imgSrc})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                                flexShrink: 0,
+                                                borderRadius: '2px'
+                                            }} />
+
+                                            {/* Content */}
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{
+                                                    color: '#b80000',
+                                                    fontWeight: 'bold',
+                                                    fontSize: '0.8rem',
+                                                    marginBottom: '2px'
+                                                }}>
+                                                    {category ? category.toUpperCase() : 'NEWS'}
+                                                    <span style={{ color: '#666', fontWeight: 'normal', marginLeft: '6px', fontSize: '0.7rem' }}>{time}</span>
+                                                </div>
+                                                <div style={{
+                                                    fontWeight: 'bold',
+                                                    fontSize: '0.9rem',
+                                                    color: '#222',
+                                                    marginBottom: '2px',
+                                                    lineHeight: '1.2',
+                                                    whiteSpace: 'nowrap',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}>
+                                                    {headline}
+                                                </div>
+                                                <div style={{
+                                                    color: '#555',
+                                                    fontSize: '0.8rem',
+                                                    lineHeight: '1.3',
+                                                    display: '-webkit-box',
+                                                    WebkitLineClamp: 2,
+                                                    WebkitBoxOrient: 'vertical',
+                                                    overflow: 'hidden'
+                                                }}>
+                                                    {body}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
