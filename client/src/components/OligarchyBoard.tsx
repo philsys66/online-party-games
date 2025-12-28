@@ -440,6 +440,43 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                 </div>
 
 
+                {/* Rent Alert Overlay */}
+                <AnimatePresence>
+                    {game.activeAlert && game.activeAlert.playerId === socket.id && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 50 }}
+                            style={{
+                                position: 'absolute',
+                                left: '50%',
+                                top: '50%',
+                                transform: 'translate(-50%, -50%)', // Center screen
+                                background: 'rgba(220, 38, 38, 0.95)', // Strong Red
+                                border: '2px solid #ef4444',
+                                borderRadius: '16px',
+                                padding: '30px 40px',
+                                color: 'white',
+                                zIndex: 200, // Higher than everything
+                                boxShadow: '0 0 50px rgba(255, 0, 0, 0.6)',
+                                maxWidth: '80%',
+                                width: '400px',
+                                textAlign: 'center',
+                                backdropFilter: 'blur(10px)'
+                            }}
+                        >
+                            <div style={{ fontSize: '3rem', marginBottom: '10px' }}>💸</div>
+                            <div style={{ fontWeight: 'bold', fontSize: '1.5rem', marginBottom: '10px', textTransform: 'uppercase' }}>PENALTY PAID</div>
+                            <div style={{ fontSize: '1.2rem', lineHeight: '1.5' }}>
+                                {game.activeAlert.message}
+                            </div>
+                            <div style={{ marginTop: '20px', fontSize: '0.9rem', opacity: 0.8 }}>
+                                (Use your funds wisely to recover!)
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
             </div >
         </>
     );
