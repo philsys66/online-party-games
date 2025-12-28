@@ -421,14 +421,14 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                 {(() => {
                                                     const pos = playerState.position;
                                                     const companyState = game.companies[pos];
-                                                    // const company = OLIGARCHY_BOARD[pos];
+                                                    const company = OLIGARCHY_BOARD[pos];
                                                     if (!companyState.ownerId && playerState.cash >= companyState.currentValue) {
                                                         return (
                                                             <button
                                                                 onClick={() => socket.emit('oligarchy_buy', room.id)}
                                                                 style={btnStyle('#00d2d3')}
                                                             >
-                                                                ACQUIRE ASSET (${companyState.currentValue}M)
+                                                                ACQUIRE {company.name.toUpperCase()} (${companyState.currentValue}M)
                                                             </button>
                                                         );
                                                     }
