@@ -202,190 +202,191 @@ export const purchaseOligarchyCompany = (room: Room, playerId: string) => {
 
     if (!player.companies.includes(company.id)) {
         player.companies.push(company.id);
+    }
 
-        addNewsItem(game, "Acquisition Update", `${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${companyState.currentValue}M.`, "finance");
+    addNewsItem(game, "Acquisition Update", `${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${companyState.currentValue}M.`, "finance");
 
-        checkOligarchVictory(room, playerId);
+    checkOligarchVictory(room, playerId);
+};
+
+export const endOligarchyTurn = (room: Room) => {
+    if (!room.gameState.oligarchy) return;
+    const game = room.gameState.oligarchy;
+
+    const activePlayers = room.players
+        .filter(p => !game.players[p.id]?.isBankrupt && p.role !== 'banker')
+        .map(p => p.id);
+
+    if (activePlayers.length < 1) return;
+
+    const currentIdx = activePlayers.indexOf(game.currentTurnPlayerId);
+
+    // Check if round finished (last player just acted)
+    if (currentIdx === activePlayers.length - 1) {
+        // End of Round -> TRIGGER NEWSFLASH
+        triggerNewsflash(room);
+        game.roundCount++;
+    }
+
+    const nextIdx = (currentIdx + 1) % activePlayers.length;
+    game.currentTurnPlayerId = activePlayers[nextIdx];
+    game.turnPhase = 'rolling';
+    game.lastActionTime = Date.now();
+};
+
+const triggerNewsflash = (room: Room) => {
+    if (!room.gameState.oligarchy) return;
+    const game = room.gameState.oligarchy;
+
+    // Pick random newsflash
+    const event = NEWSFLASH_EVENTS[Math.floor(Math.random() * NEWSFLASH_EVENTS.length)];
+
+    game.activeNewsflash = {
+        title: event.title,
+        description: event.description,
+        type: event.type,
+        sectors: event.sectors as string[]
     };
 
-    export const endOligarchyTurn = (room: Room) => {
-        if (!room.gameState.oligarchy) return;
-        const game = room.gameState.oligarchy;
+    game.transactionLog.unshift(`[NEWSFLASH] ${event.title.toUpperCase()}: ${event.description}`);
 
-        const activePlayers = room.players
-            .filter(p => !game.players[p.id]?.isBankrupt && p.role !== 'banker')
-            .map(p => p.id);
+    // APPLY ECONOMIC EFFECTS
+    const affectedSectors = event.sectors;
+    const allCompanies = OLIGARCHY_BOARD;
 
-        if (activePlayers.length < 1) return;
+    allCompanies.forEach(c => {
+        if (affectedSectors.includes(c.sector)) {
+            const companyState = game.companies[c.id];
 
-        const currentIdx = activePlayers.indexOf(game.currentTurnPlayerId);
+            // 1. Update Market Value
+            if (event.valueChange) {
+                // Keep value reasonably bounded? e.g. min $10M
+                const newValue = Math.floor(companyState.currentValue * event.valueChange);
+                companyState.currentValue = Math.max(10, newValue);
+            }
 
-        // Check if round finished (last player just acted)
-        if (currentIdx === activePlayers.length - 1) {
-            // End of Round -> TRIGGER NEWSFLASH
-            triggerNewsflash(room);
-            game.roundCount++;
-        }
-
-        const nextIdx = (currentIdx + 1) % activePlayers.length;
-        game.currentTurnPlayerId = activePlayers[nextIdx];
-        game.turnPhase = 'rolling';
-        game.lastActionTime = Date.now();
-    };
-
-    const triggerNewsflash = (room: Room) => {
-        if (!room.gameState.oligarchy) return;
-        const game = room.gameState.oligarchy;
-
-        // Pick random newsflash
-        const event = NEWSFLASH_EVENTS[Math.floor(Math.random() * NEWSFLASH_EVENTS.length)];
-
-        game.activeNewsflash = {
-            title: event.title,
-            description: event.description,
-            type: event.type,
-            sectors: event.sectors as string[]
-        };
-
-        game.transactionLog.unshift(`[NEWSFLASH] ${event.title.toUpperCase()}: ${event.description}`);
-
-        // APPLY ECONOMIC EFFECTS
-        const affectedSectors = event.sectors;
-        const allCompanies = OLIGARCHY_BOARD;
-
-        allCompanies.forEach(c => {
-            if (affectedSectors.includes(c.sector)) {
-                const companyState = game.companies[c.id];
-
-                // 1. Update Market Value
-                if (event.valueChange) {
-                    // Keep value reasonably bounded? e.g. min $10M
-                    const newValue = Math.floor(companyState.currentValue * event.valueChange);
-                    companyState.currentValue = Math.max(10, newValue);
-                }
-
-                // 2. Direct Cash Effect (Dividend / Cost) to Owner
-                if (companyState.ownerId && event.cashEffect) {
-                    const owner = game.players[companyState.ownerId];
-                    if (owner && !owner.isBankrupt) {
-                        owner.cash += event.cashEffect;
-                        // Log if significant?
-                    }
+            // 2. Direct Cash Effect (Dividend / Cost) to Owner
+            if (companyState.ownerId && event.cashEffect) {
+                const owner = game.players[companyState.ownerId];
+                if (owner && !owner.isBankrupt) {
+                    owner.cash += event.cashEffect;
+                    // Log if significant?
                 }
             }
-        });
-    };
-
-    const checkOligarchVictory = (room: Room, playerId: string) => {
-        const game = room.gameState.oligarchy!;
-        const player = game.players[playerId];
-
-        // Check for "Controlling Interest": Own 3 complete sectors
-        // Sectors are: retail, energy, healthcare, financial, communications, technology
-        const sectors = Object.keys(SECTORS) as Array<keyof typeof SECTORS>;
-        let completedSectors = 0;
-
-        sectors.forEach(sector => {
-            const sectorCompanies = OLIGARCHY_BOARD.filter(c => c.sector === sector);
-            const owned = sectorCompanies.every(c => player.companies.includes(c.id));
-            if (owned) completedSectors++;
-        });
-
-        if (completedSectors >= 3) {
-            addNewsItem(game, "Dominance Achieved", `${room.players.find(p => p.id === playerId)?.name} has achieved global dominance (3 Sectors owned)!`, "war");
-            room.gameState.status = 'results';
         }
-    };
+    });
+};
 
-    export const startOligarchyAuction = (room: Room, companyId: number, sellerId: string) => {
-        if (!room.gameState.oligarchy) return;
-        const game = room.gameState.oligarchy;
+const checkOligarchVictory = (room: Room, playerId: string) => {
+    const game = room.gameState.oligarchy!;
+    const player = game.players[playerId];
 
-        const company = OLIGARCHY_BOARD.find(c => c.id === companyId);
-        if (!company) return;
+    // Check for "Controlling Interest": Own 3 complete sectors
+    // Sectors are: retail, energy, healthcare, financial, communications, technology
+    const sectors = Object.keys(SECTORS) as Array<keyof typeof SECTORS>;
+    let completedSectors = 0;
 
-        game.turnPhase = 'auction';
-        game.auction = {
-            companyId: companyId,
-            sellerId: sellerId,
-            currentBid: Math.floor(company.value * 0.8), // Start at 80%? Or $1? Let's say $1 to encourage action. Actually $1M.
-            highestBidderId: undefined, // No bids yet
-            timeLeft: 30, // 30 seconds
-            participants: room.players.map(p => p.id).filter(id => id !== sellerId) // Everyone else
-        };
+    sectors.forEach(sector => {
+        const sectorCompanies = OLIGARCHY_BOARD.filter(c => c.sector === sector);
+        const owned = sectorCompanies.every(c => player.companies.includes(c.id));
+        if (owned) completedSectors++;
+    });
 
-        game.turnPhase = 'auction';
-
-        addNewsItem(game, "Asset Auction", `${room.players.find(p => p.id === sellerId)?.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`, "bidding");
-    };
-
-    export const handleOligarchyBid = (room: Room, playerId: string, bidAmount: number) => {
-        if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
-        const auction = room.gameState.oligarchy.auction;
-
-        if (bidAmount <= auction.currentBid) return;
-        if (room.gameState.oligarchy.players[playerId].cash < bidAmount) return;
-
-        auction.currentBid = bidAmount;
-        auction.highestBidderId = playerId;
-        auction.timeLeft = Math.max(auction.timeLeft, 10); // Extend time if low
-
-        const bidderName = room.players.find(p => p.id === playerId)?.name;
-        // game.transactionLog.unshift(`[BID] ${bidderName} bids $${bidAmount}M.`); // Maybe too spammy?
-    };
-
-    export const endOligarchyAuction = (room: Room) => {
-        if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
-        const game = room.gameState.oligarchy;
-        const auction = game.auction!;
-
-        // Process Transfer
-        if (auction.highestBidderId) {
-            const winner = game.players[auction.highestBidderId];
-            const seller = game.players[auction.sellerId];
-            const companyState = game.companies[auction.companyId];
-
-            winner.cash -= auction.currentBid;
-            seller.cash += auction.currentBid;
-            companyState.ownerId = auction.highestBidderId;
-
-            // Update lists
-            seller.companies = seller.companies.filter(id => id !== auction.companyId);
-            if (!winner.companies.includes(auction.companyId)) winner.companies.push(auction.companyId);
-
-            // Update Market Value to match Sold Price?
-            companyState.currentValue = auction.currentBid; // Market realizes new value
-
-            const companyName = OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name;
-            const winnerName = room.players.find(p => p.id === auction.highestBidderId)?.name;
-            addNewsItem(game, "Auction Sold", `${companyName} sold to ${winnerName} for $${auction.currentBid}M.`, "finance");
-        } else {
-            addNewsItem(game, "Auction Failed", `No bids for ${OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name}. Retained by owner.`, "bankruptcy");
-        }
-
-        game.auction = null;
-        game.turnPhase = 'acting'; // Return to seller's turn (or 'rolling'? Usually selling is an action during turn)
-        // Actually if they sold during their turn, they can still act.
-    };
-
-    export const checkOligarchyAuctionTick = (room: Room) => {
-        if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
-        const auction = room.gameState.oligarchy.auction;
-
-        auction.timeLeft -= 1;
-        if (auction.timeLeft <= 0) {
-            endOligarchyAuction(room);
-        }
-    };
-
-    // Helper to add news
-    function addNewsItem(game: any, headline: string, body: string, category: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding') {
-        game.transactionLog.unshift({
-            id: Math.random().toString(36).substr(2, 9),
-            headline,
-            body,
-            imageCategory: category,
-            timestamp: Date.now()
-        });
-        if (game.transactionLog.length > 50) game.transactionLog.pop();
+    if (completedSectors >= 3) {
+        addNewsItem(game, "Dominance Achieved", `${room.players.find(p => p.id === playerId)?.name} has achieved global dominance (3 Sectors owned)!`, "war");
+        room.gameState.status = 'results';
     }
+};
+
+export const startOligarchyAuction = (room: Room, companyId: number, sellerId: string) => {
+    if (!room.gameState.oligarchy) return;
+    const game = room.gameState.oligarchy;
+
+    const company = OLIGARCHY_BOARD.find(c => c.id === companyId);
+    if (!company) return;
+
+    game.turnPhase = 'auction';
+    game.auction = {
+        companyId: companyId,
+        sellerId: sellerId,
+        currentBid: Math.floor(company.value * 0.8), // Start at 80%? Or $1? Let's say $1 to encourage action. Actually $1M.
+        highestBidderId: undefined, // No bids yet
+        timeLeft: 30, // 30 seconds
+        participants: room.players.map(p => p.id).filter(id => id !== sellerId) // Everyone else
+    };
+
+    game.turnPhase = 'auction';
+
+    addNewsItem(game, "Asset Auction", `${room.players.find(p => p.id === sellerId)?.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`, "bidding");
+};
+
+export const handleOligarchyBid = (room: Room, playerId: string, bidAmount: number) => {
+    if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
+    const auction = room.gameState.oligarchy.auction;
+
+    if (bidAmount <= auction.currentBid) return;
+    if (room.gameState.oligarchy.players[playerId].cash < bidAmount) return;
+
+    auction.currentBid = bidAmount;
+    auction.highestBidderId = playerId;
+    auction.timeLeft = Math.max(auction.timeLeft, 10); // Extend time if low
+
+    const bidderName = room.players.find(p => p.id === playerId)?.name;
+    // game.transactionLog.unshift(`[BID] ${bidderName} bids $${bidAmount}M.`); // Maybe too spammy?
+};
+
+export const endOligarchyAuction = (room: Room) => {
+    if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
+    const game = room.gameState.oligarchy;
+    const auction = game.auction!;
+
+    // Process Transfer
+    if (auction.highestBidderId) {
+        const winner = game.players[auction.highestBidderId];
+        const seller = game.players[auction.sellerId];
+        const companyState = game.companies[auction.companyId];
+
+        winner.cash -= auction.currentBid;
+        seller.cash += auction.currentBid;
+        companyState.ownerId = auction.highestBidderId;
+
+        // Update lists
+        seller.companies = seller.companies.filter(id => id !== auction.companyId);
+        if (!winner.companies.includes(auction.companyId)) winner.companies.push(auction.companyId);
+
+        // Update Market Value to match Sold Price?
+        companyState.currentValue = auction.currentBid; // Market realizes new value
+
+        const companyName = OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name;
+        const winnerName = room.players.find(p => p.id === auction.highestBidderId)?.name;
+        addNewsItem(game, "Auction Sold", `${companyName} sold to ${winnerName} for $${auction.currentBid}M.`, "finance");
+    } else {
+        addNewsItem(game, "Auction Failed", `No bids for ${OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name}. Retained by owner.`, "bankruptcy");
+    }
+
+    game.auction = null;
+    game.turnPhase = 'acting'; // Return to seller's turn (or 'rolling'? Usually selling is an action during turn)
+    // Actually if they sold during their turn, they can still act.
+};
+
+export const checkOligarchyAuctionTick = (room: Room) => {
+    if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction) return;
+    const auction = room.gameState.oligarchy.auction;
+
+    auction.timeLeft -= 1;
+    if (auction.timeLeft <= 0) {
+        endOligarchyAuction(room);
+    }
+};
+
+// Helper to add news
+function addNewsItem(game: any, headline: string, body: string, category: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding') {
+    game.transactionLog.unshift({
+        id: Math.random().toString(36).substr(2, 9),
+        headline,
+        body,
+        imageCategory: category,
+        timestamp: Date.now()
+    });
+    if (game.transactionLog.length > 50) game.transactionLog.pop();
+}
