@@ -545,18 +545,18 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                     let imgSrc = 'https://images.unsplash.com/photo-1541904845547-0eaf866de232?auto=format&fit=crop&w=150&q=80'; // Fallback (Abstract)
                                     // Categories
                                     if (category === 'finance') imgSrc = 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=150&q=80'; // 3D Coins
-                                    if (category === 'rent') imgSrc = 'https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=150&q=80'; // Model House
+                                    if (category === 'rent') imgSrc = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=150&q=80'; // Key/House (Updated)
                                     if (category === 'war') imgSrc = 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=150&q=80'; // Toy Soldiers
                                     if (category === 'bankruptcy') imgSrc = 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=150&q=80'; // Broken Piggy Bank
                                     if (category === 'cycle') imgSrc = 'https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?auto=format&fit=crop&w=150&q=80'; // Globe
                                     if (category === 'bidding') imgSrc = 'https://images.unsplash.com/photo-1550534791-2677533605ab?auto=format&fit=crop&w=150&q=80'; // Gavel
                                     if (category === 'news') imgSrc = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=150&q=80'; // Newspaper
                                     // Sectors
-                                    if (category === 'technology' || category === 'tech') imgSrc = 'https://images.unsplash.com/photo-1535378437803-db1a5a6297a0?auto=format&fit=crop&w=150&q=80'; // Cute Robot
+                                    if (category === 'technology' || category === 'tech') imgSrc = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=150&q=80'; // Chip/Tech (Updated)
                                     if (category === 'retail') imgSrc = 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?auto=format&fit=crop&w=150&q=80'; // Shopping Cart/Store
                                     if (category === 'energy') imgSrc = 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=150&q=80'; // Lightbulb/Idea
-                                    if (category === 'healthcare') imgSrc = 'https://images.unsplash.com/photo-1584036561566-b93a5806e148?auto=format&fit=crop&w=150&q=80'; // Stethoscope/Medical
-                                    if (category === 'financial') imgSrc = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=150&q=80'; // Market Chart
+                                    if (category === 'healthcare') imgSrc = 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=150&q=80'; // Medical (Updated)
+                                    if (category === 'financial' || category === 'financials') imgSrc = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=150&q=80'; // Market Chart (Verified)
                                     if (category === 'communications') imgSrc = 'https://images.unsplash.com/photo-1560169897-fc0cdbdfa4d5?auto=format&fit=crop&w=150&q=80'; // Radio/Mic
                                     // Special
                                     if (category === 'pandemic') imgSrc = 'https://images.unsplash.com/photo-1584483766114-2cea6fac256d?auto=format&fit=crop&w=150&q=80'; // Biohazard/Virus Concept
