@@ -71,7 +71,7 @@ export const handleOligarchyRoll = (room: Room, playerId: string) => {
     // Assuming standard Monopoly-style GO bonus for now ($200 like typical?). Let's say $200.
     if (playerState.position < oldPos) {
         playerState.cash += 200;
-        game.transactionLog.unshift(`[CYCLE] ${room.players.find(p => p.id === playerId)?.name} completed a global cycle. Income +$200.`);
+        game.transactionLog.unshift(`[CYCLE] ${room.players.find(p => p.id === playerId)?.name} completed a global cycle. Income +$200M.`);
         if (game.transactionLog.length > 50) game.transactionLog.pop();
     }
 
