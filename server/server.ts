@@ -43,6 +43,31 @@ const io = new Server(server, {
 
 const rooms: Record<string, Room> = {};
 
+// Palette for high-contrast, bright/neon colors (No dark colors)
+const BRIGHT_COLORS = [
+  '#FF3366', // Neon Red/Pink
+  '#00FF00', // Lime Green
+  '#3399FF', // Sky Blue
+  '#FFCC00', // Gold/Yellow
+  '#9933CC', // Bright Purple
+  '#FF9933', // Neon Orange
+  '#00CCCC', // Cyan
+  '#FF66CC', // Hot Pink
+  '#CCFF00', // Chartreuse
+  '#6666FF', // Periwinkle
+  '#FF00CC', // Magenta
+  '#00FFCC'  // Turquoise
+];
+
+const assignPlayerColor = (room: Room): string => {
+  const usedColors = new Set(room.players.map(p => p.color).filter(Boolean));
+  for (const color of BRIGHT_COLORS) {
+    if (!usedColors.has(color)) return color;
+  }
+  // Fallback: Random from palette if all taken
+  return BRIGHT_COLORS[Math.floor(Math.random() * BRIGHT_COLORS.length)];
+};
+
 const ROOM_CODES = [
   "PARIS", "TOKYO", "MARS", "VENUS", "ZEUS", "HERA", "APOLLO", "ROME", "LIMA", "OSLO",
   "CAIRO", "DELHI", "SEOUL", "DUBAI", "YORK", "LYON", "NICE", "BONN", "BERN", "KIEV",
@@ -223,7 +248,9 @@ io.on('connection', (socket) => {
         avatar: data.avatar,
         score: 0,
         role: requestedRole,
-        isConnected: true
+        isConnected: true,
+        // Assign Color
+        color: assignPlayerColor(room)
       };
 
       room.players.push(newPlayer);
