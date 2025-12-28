@@ -189,7 +189,7 @@ const purchaseOligarchyCompany = (room, playerId) => {
     if (!player.companies.includes(company.id)) {
         player.companies.push(company.id);
     }
-    game.transactionLog.unshift(`[BUY] ${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} acquired ${company.name} for $${companyState.currentValue}M.`);
+    addNewsItem(game, "Acquisition Update", `${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} acquired ${company.name} for $${companyState.currentValue}M.`, "finance");
     checkOligarchVictory(room, playerId);
 };
 exports.purchaseOligarchyCompany = purchaseOligarchyCompany;
@@ -266,8 +266,8 @@ const checkOligarchVictory = (room, playerId) => {
             completedSectors++;
     });
     if (completedSectors >= 3) {
-        game.transactionLog.unshift(`[VICTORY] ${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} has achieved global dominance (3 Sectors owned)!`);
-        // Provide visual win state?
+        addNewsItem(game, "Dominance Achieved", `${(_a = room.players.find(p => p.id === playerId)) === null || _a === void 0 ? void 0 : _a.name} has achieved global dominance (3 Sectors owned)!`, "war");
+        room.gameState.status = 'results';
     }
 };
 const startOligarchyAuction = (room, companyId, sellerId) => {
@@ -287,7 +287,8 @@ const startOligarchyAuction = (room, companyId, sellerId) => {
         timeLeft: 30, // 30 seconds
         participants: room.players.map(p => p.id).filter(id => id !== sellerId) // Everyone else
     };
-    game.transactionLog.unshift(`[AUCTION] ${(_a = room.players.find(p => p.id === sellerId)) === null || _a === void 0 ? void 0 : _a.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`);
+    game.turnPhase = 'auction';
+    addNewsItem(game, "Asset Auction", `${(_a = room.players.find(p => p.id === sellerId)) === null || _a === void 0 ? void 0 : _a.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`, "bidding");
 };
 exports.startOligarchyAuction = startOligarchyAuction;
 const handleOligarchyBid = (room, playerId, bidAmount) => {
@@ -328,10 +329,10 @@ const endOligarchyAuction = (room) => {
         companyState.currentValue = auction.currentBid; // Market realizes new value
         const companyName = (_a = oligarchyData_1.OLIGARCHY_BOARD.find(c => c.id === auction.companyId)) === null || _a === void 0 ? void 0 : _a.name;
         const winnerName = (_b = room.players.find(p => p.id === auction.highestBidderId)) === null || _b === void 0 ? void 0 : _b.name;
-        game.transactionLog.unshift(`[SOLD] ${companyName} sold to ${winnerName} for $${auction.currentBid}M.`);
+        addNewsItem(game, "Auction Sold", `${companyName} sold to ${winnerName} for $${auction.currentBid}M.`, "finance");
     }
     else {
-        game.transactionLog.unshift(`[AUCTION] No bids for ${(_c = oligarchyData_1.OLIGARCHY_BOARD.find(c => c.id === auction.companyId)) === null || _c === void 0 ? void 0 : _c.name}. Retained by owner.`);
+        addNewsItem(game, "Auction Failed", `No bids for ${(_c = oligarchyData_1.OLIGARCHY_BOARD.find(c => c.id === auction.companyId)) === null || _c === void 0 ? void 0 : _c.name}. Retained by owner.`, "bankruptcy");
     }
     game.auction = null;
     game.turnPhase = 'acting'; // Return to seller's turn (or 'rolling'? Usually selling is an action during turn)

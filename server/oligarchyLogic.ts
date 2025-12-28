@@ -380,7 +380,7 @@ export const checkOligarchyAuctionTick = (room: Room) => {
 };
 
 // Helper to add news
-function addNewsItem(game: any, headline: string, body: string, category: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding') {
+function addNewsItem(game: any, headline: string, body: string, category: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding' | 'retail' | 'energy' | 'healthcare' | 'communications' | 'technology' | 'pandemic') {
     game.transactionLog.unshift({
         id: Math.random().toString(36).substr(2, 9),
         headline,

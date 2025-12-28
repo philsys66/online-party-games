@@ -4,7 +4,7 @@ export interface NewsItem {
     id: string;
     headline: string;
     body: string;
-    imageCategory: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding';
+    imageCategory: 'finance' | 'rent' | 'news' | 'war' | 'tech' | 'cycle' | 'bankruptcy' | 'bidding' | 'retail' | 'energy' | 'healthcare' | 'communications' | 'technology' | 'pandemic';
     timestamp: number;
 }
 
