@@ -161,7 +161,7 @@ io.on('connection', (socket) => {
       name: data.playerName,
       avatar: data.avatar,
       score: 0,
-      role: 'host',
+      role: 'player', // Creator plays as a standard player
       isConnected: true,
       color: BRIGHT_COLORS[Math.floor(Math.random() * BRIGHT_COLORS.length)]
     };
