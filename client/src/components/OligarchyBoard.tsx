@@ -31,6 +31,14 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     }, []);
 
 
+    // Auto-switch to Market view on Mobile when turn starts
+    React.useEffect(() => {
+        if (isMyTurn && isMobile) {
+            setMobileTab('controls');
+            setActiveTab('market');
+        }
+    }, [isMyTurn, isMobile]);
+
     // Sound effects (placeholders)
     // const [playCash] = useSound('/sounds/cash.mp3');
 
