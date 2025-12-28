@@ -157,14 +157,21 @@ io.on('connection', (socket) => {
     rooms[roomCode] = {
       id: roomCode,
       gameType: data.gameType || 'scattergories',
-      players: [{
+      // Assign Host
+      const hostPlayer: Player = {
         id: socket.id,
-        userId: data.userId, // Host Persistent ID
+        userId: data.userId,
         name: data.playerName,
         avatar: data.avatar,
         score: 0,
-        role: 'player' // Default role for host
-      }],
+        role: 'host', // Creator is always host initially
+        isConnected: true,
+        // Assign Color
+        color: assignPlayerColor(newRoom)
+      };
+      newRoom.players.push(hostPlayer);
+
+      rooms[roomCode] = newRoom;
       gameState: gameState,
       gameConfig: {
         timerDuration: 180,
