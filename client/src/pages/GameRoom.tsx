@@ -134,7 +134,7 @@ const GameRoom: React.FC = () => {
             className={`container column ${isFullWidthGame ? 'full-width-game' : ''}`}
             style={{
                 paddingBottom: isFullWidthGame ? '0' : '100px',
-                paddingTop: isFullWidthGame ? '0' : '80px',
+                paddingTop: isFullWidthGame ? '40px' : '80px',
                 width: isFullWidthGame ? '100vw' : '100%',
                 maxWidth: isFullWidthGame ? 'none' : undefined,
                 height: isFullWidthGame ? '100vh' : 'auto',
