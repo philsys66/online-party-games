@@ -83,7 +83,15 @@ const Lobby: React.FC = () => {
                                 exit={{ scale: 0 }}
                                 className="flex-center column"
                             >
-                                <img src={p.avatar} alt={p.name} className="avatar" />
+                                <img
+                                    src={p.avatar}
+                                    alt={p.name}
+                                    className="avatar"
+                                    style={{
+                                        border: `3px solid ${p.color || 'transparent'}`,
+                                        boxShadow: p.color ? `0 0 10px ${p.color}60` : 'none'
+                                    }}
+                                />
                                 <span style={{ fontSize: '0.9rem', marginTop: '8px' }}>{p.name}</span>
                                 {room.players[0].id === p.id && <span style={{ fontSize: '0.7rem', color: 'var(--color-primary)' }}>HOST</span>}
                             </motion.div>
