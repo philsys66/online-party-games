@@ -357,9 +357,9 @@ export const endOligarchyAuction = (room: Room) => {
 
         const companyName = OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name;
         const winnerName = room.players.find(p => p.id === auction.highestBidderId)?.name;
-        game.transactionLog.unshift(`[SOLD] ${companyName} sold to ${winnerName} for $${auction.currentBid}M.`);
+        addNewsItem(game, "Auction Sold", `${companyName} sold to ${winnerName} for $${auction.currentBid}M.`, "finance");
     } else {
-        game.transactionLog.unshift(`[AUCTION] No bids for ${OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name}. Retained by owner.`);
+        addNewsItem(game, "Auction Failed", `No bids for ${OLIGARCHY_BOARD.find(c => c.id === auction.companyId)?.name}. Retained by owner.`, "bankruptcy");
     }
 
     game.auction = null;

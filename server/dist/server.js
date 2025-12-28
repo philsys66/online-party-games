@@ -307,10 +307,9 @@ io.on('connection', (socket) => {
                     if (currentRoom.gameState.oligarchy.turnPhase === 'auction') {
                         const { checkOligarchyAuctionTick } = require('./oligarchyLogic');
                         checkOligarchyAuctionTick(currentRoom);
-                        // Emit update every second? Or only on significant changes?
-                        // For timer UI, every second is good.
-                        io.to(roomCode).emit('room_update', currentRoom);
                     }
+                    // Emit heartbeat update (handles timers, alerts clearing, etc.)
+                    io.to(roomCode).emit('room_update', currentRoom);
                 }, 1000);
             }
             else {
