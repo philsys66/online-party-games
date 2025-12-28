@@ -20,11 +20,25 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     const isMyTurn = game.currentTurnPlayerId === socket.id;
 
     const [activeTab, setActiveTab] = React.useState<'market' | 'assets'>('market');
-    // const [bidAmount, setBidAmount] = React.useState<string>(''); // For manual entry if needed, or just visual
+    const [activeRoll, setActiveRoll] = React.useState<{ die1: number, die2: number, playerId: string } | null>(null);
 
 
     // Sound effects (placeholders)
     // const [playCash] = useSound('/sounds/cash.mp3');
+
+    // Dice Roll Listener
+    React.useEffect(() => {
+        const handleRoll = (data: { die1: number, die2: number, playerId: string }) => {
+            setActiveRoll(data);
+            // Hide after 3 seconds
+            setTimeout(() => setActiveRoll(null), 3000);
+        };
+
+        socket.on('oligarchy_dice_rolled', handleRoll);
+        return () => {
+            socket.off('oligarchy_dice_rolled', handleRoll);
+        };
+    }, [socket]);
 
     // 6x6 Grid Layout
     // We map the 36 items directly to grid cells.
@@ -440,6 +454,33 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                 </div>
 
 
+                {/* Visual Dice Roll Overlay */}
+                <AnimatePresence>
+                    {activeRoll && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                zIndex: 150, // Below Rent Alert, Above Newsflash
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: 'rgba(0,0,0,0.5)',
+                                backdropFilter: 'blur(2px)',
+                                pointerEvents: 'none'
+                            }}
+                        >
+                            <div style={{ display: 'flex', gap: '30px' }}>
+                                <Dice3D value={activeRoll.die1} />
+                                <Dice3D value={activeRoll.die2} />
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 {/* Rent Alert Overlay */}
                 <AnimatePresence>
                     {game.activeAlert && game.activeAlert.playerId === socket.id && (
@@ -509,3 +550,49 @@ const btnStyle = (color: string) => ({
     fontFamily: "'JetBrains Mono', monospace",
     textTransform: 'uppercase' as const
 });
+
+const Dice3D = ({ value }: { value: number }) => {
+    // Simple 2D representation for now, styled to look nice
+    // Dots configuration
+    const dots: Record<number, number[]> = {
+        1: [4],
+        2: [0, 8],
+        3: [0, 4, 8],
+        4: [0, 2, 6, 8],
+        5: [0, 2, 4, 6, 8],
+        6: [0, 2, 3, 5, 6, 8]
+    };
+
+    return (
+        <motion.div
+            initial={{ rotate: 180, scale: 0.5 }}
+            animate={{ rotate: 360, scale: 1.5 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            style={{
+                width: '80px',
+                height: '80px',
+                background: 'white',
+                borderRadius: '16px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gridTemplateRows: 'repeat(3, 1fr)',
+                padding: '10px',
+                boxSizing: 'border-box'
+            }}
+        >
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {dots[value]?.includes(i) && (
+                        <div style={{
+                            width: '12px',
+                            height: '12px',
+                            background: '#000',
+                            borderRadius: '50%'
+                        }} />
+                    )}
+                </div>
+            ))}
+        </motion.div>
+    );
+};

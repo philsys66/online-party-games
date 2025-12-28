@@ -79,6 +79,8 @@ export const handleOligarchyRoll = (room: Room, playerId: string) => {
 
     // Handle Tile Actions
     handleTileArrival(room, playerId);
+
+    return { die1, die2 };
 };
 
 const handleTileArrival = (room: Room, playerId: string) => {
