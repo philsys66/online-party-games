@@ -21,6 +21,14 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
 
     const [activeTab, setActiveTab] = React.useState<'market' | 'assets'>('market');
     const [activeRoll, setActiveRoll] = React.useState<{ die1: number, die2: number, playerId: string } | null>(null);
+    const [mobileTab, setMobileTab] = React.useState<'board' | 'controls'>('board');
+    const [isMobile, setIsMobile] = React.useState(window.innerWidth <= 768);
+
+    React.useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
 
     // Sound effects (placeholders)
@@ -115,23 +123,30 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
 
         /* Mobile Layout */
         @media (max-width: 768px) {
+            .oligarchy-app {
+                height: 100vh !important; /* Full screen on mobile */
+                border-radius: 0;
+            }
             .oligarchy-main-layout {
                 flex-direction: column;
+                padding-bottom: 60px; /* Space for Nav Bar */
             }
             .oligarchy-board-container {
-                flex: 1; /* Board takes upper part */
-                overflow: hidden; /* Prevent body scroll */
+                display: ${mobileTab === 'board' ? 'flex' : 'none'};
+                height: 100%;
+                overflow: hidden;
             }
             .oligarchy-grid-wrapper {
-                max-width: 100%; /* Use full width */
-                max-height: 100%;
+                max-width: 100%;
+                width: 95%; /* Little padding */
             }
             .oligarchy-control-panel {
+                display: ${mobileTab === 'controls' ? 'flex' : 'none'};
                 width: 100%;
-                height: 50%; /* Panel takes bottom 50% */
-                min-height: 200px;
+                height: 100%;
                 border-left: none;
-                border-top: 1px solid #30363d;
+                border-top: none;
+                padding-bottom: 20px;
             }
         }
     `;
@@ -481,7 +496,51 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     )}
                 </AnimatePresence>
 
-                {/* Rent Alert Overlay */}
+                {/* Mobile Navigation Bar */}
+                {isMobile && (
+                    <div style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        height: '60px',
+                        background: '#0d1117',
+                        borderTop: '1px solid #30363d',
+                        display: 'flex',
+                        zIndex: 200
+                    }}>
+                        <button
+                            onClick={() => setMobileTab('board')}
+                            style={{
+                                flex: 1,
+                                background: 'transparent',
+                                border: 'none',
+                                color: mobileTab === 'board' ? '#2ecc71' : '#8b949e',
+                                fontWeight: 'bold',
+                                borderTop: mobileTab === 'board' ? '3px solid #2ecc71' : '3px solid transparent',
+                                cursor: 'pointer',
+                                fontSize: '0.9rem'
+                            }}
+                        >
+                            TRADING FLOOR
+                        </button>
+                        <button
+                            onClick={() => setMobileTab('controls')}
+                            style={{
+                                flex: 1,
+                                background: 'transparent',
+                                border: 'none',
+                                color: mobileTab === 'controls' ? '#00d2d3' : '#8b949e',
+                                fontWeight: 'bold',
+                                borderTop: mobileTab === 'controls' ? '3px solid #00d2d3' : '3px solid transparent',
+                                cursor: 'pointer',
+                                fontSize: '0.9rem'
+                            }}
+                        >
+                            MARKET & ASSETS
+                        </button>
+                    </div>
+                )}
                 <AnimatePresence>
                     {game.activeAlert && game.activeAlert.playerId === socket.id && (
                         <motion.div
