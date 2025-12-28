@@ -541,15 +541,15 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                     const category = isLegacy ? 'news' : item.imageCategory;
                                     const time = isLegacy ? '' : new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                                    // Mock Images based on category
-                                    let imgSrc = 'https://api.dicebear.com/7.x/identicon/svg?seed=news'; // Fallback
-                                    if (category === 'finance') imgSrc = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'rent') imgSrc = 'https://images.unsplash.com/photo-1580519542095-20d0f417578b?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'war') imgSrc = 'https://images.unsplash.com/photo-1533552097-75927376c72e?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'tech') imgSrc = 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'bankruptcy') imgSrc = 'https://images.unsplash.com/photo-1596265371388-43edb10653f6?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'cycle') imgSrc = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=100&q=80';
-                                    if (category === 'bidding') imgSrc = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=100&q=80';
+                                    // Thematic Cartoon/Illustration Assets
+                                    let imgSrc = 'https://images.unsplash.com/photo-1541904845547-0eaf866de232?auto=format&fit=crop&w=150&q=80'; // Fallback (Abstract)
+                                    if (category === 'finance') imgSrc = 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=150&q=80'; // 3D Coins/Finance
+                                    if (category === 'rent') imgSrc = 'https://images.unsplash.com/photo-1580587771525-78b9dba3b91d?auto=format&fit=crop&w=150&q=80'; // Model House
+                                    if (category === 'war') imgSrc = 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&w=150&q=80'; // Toy Soldiers/Strategy
+                                    if (category === 'tech') imgSrc = 'https://images.unsplash.com/photo-1535378437803-db1a5a6297a0?auto=format&fit=crop&w=150&q=80'; // Cute Robot
+                                    if (category === 'bankruptcy') imgSrc = 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&w=150&q=80'; // Broken Piggy Bank
+                                    if (category === 'cycle') imgSrc = 'https://images.unsplash.com/photo-1529400971008-f566de0e6dfc?auto=format&fit=crop&w=150&q=80'; // Globe
+                                    if (category === 'bidding') imgSrc = 'https://images.unsplash.com/photo-1550534791-2677533605ab?auto=format&fit=crop&w=150&q=80'; // Gavel/Auction
 
                                     return (
                                         <div key={i} style={{
