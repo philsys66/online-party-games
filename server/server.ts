@@ -164,61 +164,99 @@ io.on('connection', (socket) => {
   socket.on('join_room', (data: { roomCode: string, playerName: string, avatar: string, role?: 'player' | 'banker', userId?: string }) => {
     console.log(`Join attempt: ${data.playerName} trying to join ${data.roomCode} as ${data.role || 'player'} (UserId: ${data.userId})`);
     const room = rooms[data.roomCode];
+
     if (room) {
-      // Check if player ALREADY exists (Rejoin Logic)
-      const existingPlayer = data.userId ? room.players.find(p => p.userId === data.userId) : null;
+      // --- REJOIN LOGIC ---
+      // Check if player ALREADY exists by Name (primary) or UserId (if persistent)
+      // Using Name for simplicity as "account recovery"
+      const existingPlayer = room.players.find(p => p.name === data.playerName || (data.userId && p.userId === data.userId));
 
       if (existingPlayer) {
         console.log(`Rejoin: Updating socket ID for ${existingPlayer.name} from ${existingPlayer.id} to ${socket.id}`);
+        const oldSocketId = existingPlayer.id;
 
-        // If the old socket is still connected? Force disconnect? Or just overwrite.
-        // socket.leave is handled by disconnect logic usually.
+        // 1. Update Player Object
+        existingPlayer.id = socket.id;
+        existingPlayer.isConnected = true;
+        // existingPlayer.avatar = data.avatar; // Optionally update look
 
-        existingPlayer.id = socket.id; // Update to NEW socket ID
-        existingPlayer.role = data.role || existingPlayer.role; // Update role if requested? Or keep old? Keep old usually safer for rejoin.
-        // Actually, let's keep old role to prevent "Banker" stealing?
-        // But if they refresh, they send the same role hopefully.
+        // 2. Update Game State (Oligarchy)
+        if (room.gameState.oligarchy) {
+          // The game state stores players by ID key, so we must migrate the key
+          const oldState = room.gameState.oligarchy.players[oldSocketId];
+          if (oldState) {
+            room.gameState.oligarchy.players[socket.id] = oldState;
+            delete room.gameState.oligarchy.players[oldSocketId];
 
-        socket.join(data.roomCode);
+            // Update Company Ownerships
+            Object.values(room.gameState.oligarchy.companies).forEach(c => {
+              if (c.ownerId === oldSocketId) c.ownerId = socket.id;
+            });
 
-        if (room.gameType === 'monopoly' && room.gameState.monopoly && room.gameState.monopoly.players[existingPlayer.id]) {
-          room.gameState.monopoly.players[existingPlayer.id].isAfk = false;
-        }
-
-        // Fix: Reset score if game is in "waiting" state (Lobby)
-        // This prevents points carrying over if players rejoin the same room for a new game.
-        if (room.gameState.status === 'waiting') {
-          existingPlayer.score = 0;
-        }
-
-        io.to(data.roomCode).emit('room_update', room);
-        console.log(`${existingPlayer.name} rejoined room ${data.roomCode}`);
-      } else {
-        // New Join Logic
-        // Check if trying to join as banker but one exists
-        let requestedRole = data.role || 'player';
-        if (requestedRole === 'banker') {
-          const hasBanker = room.players.some(p => p.role === 'banker');
-          if (hasBanker) {
-            console.log(`Room ${data.roomCode} already has a banker. Demoting ${data.playerName} to player.`);
-            requestedRole = 'player';
+            // Update Turn Tracker
+            if (room.gameState.oligarchy.currentTurnPlayerId === oldSocketId) {
+              room.gameState.oligarchy.currentTurnPlayerId = socket.id;
+            }
           }
         }
 
-        room.players.push({
-          id: socket.id,
-          userId: data.userId, // Store persistent ID
-          name: data.playerName,
-          avatar: data.avatar,
-          score: 0,
-          role: requestedRole
-        });
         socket.join(data.roomCode);
+        socket.emit('room_joined', room);
         io.to(data.roomCode).emit('room_update', room);
-        console.log(`${data.playerName} joined room ${data.roomCode} as ${requestedRole}`);
+        console.log(`${existingPlayer.name} rejoined room ${data.roomCode}`);
+        return;
       }
+
+      // --- NEW JOIN LOGIC ---
+      // Allow joining even if gameStarted = true (Mid-Game Join)
+
+      let requestedRole = data.role || 'player';
+      if (requestedRole === 'banker' && room.players.some(p => p.role === 'banker')) {
+        requestedRole = 'player';
+      }
+
+      const newPlayer: Player = {
+        id: socket.id,
+        userId: data.userId,
+        name: data.playerName,
+        avatar: data.avatar,
+        score: 0,
+        role: requestedRole,
+        isConnected: true
+      };
+
+      room.players.push(newPlayer);
+      socket.join(data.roomCode);
+
+      // Initialize Game State for New Player (Mid-Game)
+      if (room.gameStarted) {
+        console.log(`Mid-Game Join: Initializing state for ${newPlayer.name}`);
+        if (room.gameState.oligarchy) {
+          room.gameState.oligarchy.players[socket.id] = {
+            cash: 1500, // Starting cash
+            netWorth: 1500,
+            position: 0,
+            isBankrupt: false,
+            ownedProperties: []
+          };
+        } else if (room.gameState.monopoly) {
+          room.gameState.monopoly.players[socket.id] = {
+            position: 0,
+            money: 1500,
+            isBankrupt: false,
+            isAfk: false,
+            properties: [],
+            jailTurns: 0
+          };
+        }
+      }
+
+      socket.emit('room_joined', room);
+      io.to(data.roomCode).emit('room_update', room);
+      console.log(`${data.playerName} joined room ${data.roomCode} as ${requestedRole}`);
+
     } else {
-      console.log(`Join failed: Room ${data.roomCode} not found. Available rooms: ${Object.keys(rooms).join(', ')}`);
+      console.log(`Join failed: Room ${data.roomCode} not found.`);
       socket.emit('error', 'Room not found');
     }
   });
