@@ -63,7 +63,7 @@ export const handleOligarchyRoll = (room: Room, playerId: string) => {
 
     // Movement
     const oldPos = playerState.position;
-    playerState.position = (playerState.position + total) % 36;
+    playerState.position = (playerState.position + total) % 30; // 30-space board now
     game.lastRoll = [die1, die2];
 
     // Pass Start Bonus? (Not explicitly in rules, but standard "Loop" usually implies it)
@@ -154,8 +154,8 @@ export const calculateSubscriptionFee = (room: Room, companyId: number): number 
     // Let's implement steps as defined (thresholds).
 
     let percentage = 0.10;
-    if (ownedInSector >= 6) percentage = 1.0;
-    else if (ownedInSector >= 3) percentage = 0.30;
+    if (ownedInSector >= 5) percentage = 1.0; // Monopoly (5 items)
+    else if (ownedInSector >= 3) percentage = 0.30; // Stronghold (3 items)
 
     return Math.floor(companyState.currentValue * percentage);
 };

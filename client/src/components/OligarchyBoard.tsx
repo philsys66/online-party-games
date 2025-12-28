@@ -66,7 +66,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
 
         .oligarchy-grid-wrapper {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             grid-template-rows: repeat(6, 1fr);
             gap: 4px;
             width: 100%;
