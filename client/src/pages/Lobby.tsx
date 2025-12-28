@@ -155,12 +155,18 @@ const Lobby: React.FC = () => {
                     {room.gameType === 'charades' && (
                         <div style={{ gridColumn: 'span 2' }}>
                             <label style={{ display: 'block', marginBottom: '8px', color: 'var(--color-text-dim)' }}>Word Category</label>
-                                    <option value="Famous People">Famous People</option>
-                                    <option value="Jobs & Occupations">Jobs & Occupations</option>
-                                </select>
-                            ) : (
-                                <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{room.gameConfig?.charadesCategory || 'Friends'}</div>
-                            )}
+                            <select
+                                value={room.gameConfig?.charadesCategory || 'Friends'}
+                                onChange={(e) => updateSettings({ charadesCategory: e.target.value })}
+                                disabled={!isHost}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid rgba(255,255,255,0.1)' }}
+                            >
+                                <option value="Friends">Friends (TV Show)</option>
+                                <option value="Movies">Movies</option>
+                                <option value="Actions & Activities">Actions & Activities</option>
+                                <option value="Famous People">Famous People</option>
+                                <option value="Jobs & Occupations">Jobs & Occupations</option>
+                            </select>
                         </div>
                     )}
                 </div>
