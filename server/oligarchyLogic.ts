@@ -121,7 +121,19 @@ const handleTileArrival = (room: Room, playerId: string) => {
 
             const payerName = room.players.find(p => p.id === playerId)?.name;
             const ownerName = room.players.find(p => p.id === companyState.ownerId)?.name;
-            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent} fee to ${ownerName} for ${company.name}.`);
+            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`);
+
+            // Emit Rent Alert
+            // We need to access IO to emit, but this function is pure logic usually?
+            // Actually handleOligarchyRoll calls this. We can attach the alert to the game state or return it?
+            // Let's attach a temporary alert object to the game state, which the client can read and clear?
+            // Or better: just assume the client parses the log? No, user wants popup.
+            // Let's add an 'alert' field to the game state that lasts for one turn or is cleared by client.
+            game.activeAlert = {
+                type: 'rent',
+                message: `You landed on ${company.name}! You paid ${ownerName} $${rent}M in fees.`,
+                playerId: playerId // Target player
+            };
         }
     } else if (!companyState.ownerId) {
         // UNOWNED: Can buy

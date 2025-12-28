@@ -32,23 +32,52 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     // CSS Styles
     const styles = `
         .oligarchy-app {
-            height: calc(100vh - 140px);
+            height: calc(100vh - 140px); /* Fit within standard layout (Head + padding) */
             width: 100%;
-            background: rgba(13, 17, 23, 0.4); /* Semi-transparent */
-            backdrop-filter: blur(10px);
+            background: #0d1117;
             color: #e6edf3;
             font-family: 'JetBrains Mono', monospace;
             display: flex;
             flex-direction: column;
             overflow: hidden;
             box-sizing: border-box;
-            border-radius: 8px;
+            border-radius: 8px; /* Slight rounding to match theme */
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
+        .oligarchy-main-layout {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .oligarchy-board-container {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            overflow: auto;
+            position: relative;
+        }
+
+        .oligarchy-grid-wrapper {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1/1;
+            position: relative; /* Anchor for Newsflash */
+        }
+
         .oligarchy-control-panel {
-            background: rgba(13, 17, 23, 0.6); /* Semi-transparent */
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            background: #0d1117;
+            border-left: 1px solid #30363d;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -57,57 +86,46 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             box-sizing: border-box;
         }
 
-        .rent-alert {
-             position: absolute;
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%);
-             background: rgba(220, 20, 60, 0.9);
-             color: white;
-             padding: 20px 40px;
-             border-radius: 12px;
-             font-size: 1.5rem;
-             font-weight: bold;
-             z-index: 100;
-             box-shadow: 0 0 50px rgba(220, 20, 60, 0.5);
-             text-align: center;
-             pointer-events: none;
-             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            from { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
-    `;
-
-    // Rent Popup Logic
-    const [rentAlert, setRentAlert] = React.useState<{ msg: string } | null>(null);
-
-    React.useEffect(() => {
-        if (game.transactionLog.length > 0) {
-            const lastLog = game.transactionLog[0];
-            if (lastLog.startsWith('[RENT]') && lastLog.includes(room.players.find(p => p.id === socket.id)?.name || '')) {
-                // It's a rent payment involving me (payer? logic says "Player paid...". So yes if I am the payer)
-                // Actually, let's show it for everyone involved or just everyone? "Pop up an alert" - implies visibility.
-                // Let's show it if it happened recently (we rely on useEffect triggering on log change).
-                setRentAlert({ msg: lastLog.replace('[RENT] ', '') });
-                const timer = setTimeout(() => setRentAlert(null), 3000);
-                return () => clearTimeout(timer);
+        /* Desktop Layout */
+        @media (min-width: 769px) {
+            .oligarchy-main-layout {
+                flex-direction: row;
+            }
+            .oligarchy-control-panel {
+                width: 300px;
+                height: 100%;
+                border-left: 1px solid #30363d;
+                border-top: none;
             }
         }
-    }, [game.transactionLog]);
 
+        /* Mobile Layout */
+        @media (max-width: 768px) {
+            .oligarchy-main-layout {
+                flex-direction: column;
+            }
+            .oligarchy-board-container {
+                flex: 1; /* Board takes upper part */
+                overflow: hidden; /* Prevent body scroll */
+            }
+            .oligarchy-grid-wrapper {
+                max-width: 100%; /* Use full width */
+                max-height: 100%;
+            }
+            .oligarchy-control-panel {
+                width: 100%;
+                height: 40%; /* Panel takes bottom 40% */
+                min-height: 200px;
+                border-left: none;
+                border-top: 1px solid #30363d;
+            }
+        }
+    `;
 
     return (
         <>
             <style>{styles}</style>
             <div className="oligarchy-app">
-                {rentAlert && (
-                    <div className="rent-alert">
-                        💸 {rentAlert.msg}
-                    </div>
-                )}
                 {/* Main Content: Grid + Dashboard */}
                 <div className="oligarchy-main-layout">
 

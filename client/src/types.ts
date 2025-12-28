@@ -108,6 +108,11 @@ export interface GameState {
             timeLeft: number;
             participants: string[];
         } | null;
+        activeAlert?: {
+            type: 'rent';
+            message: string;
+            playerId: string;
+        } | null;
         lastRoll?: number[];
         transactionLog: string[];
         lastActionTime?: number;
