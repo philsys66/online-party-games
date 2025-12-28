@@ -4,11 +4,29 @@ exports.checkOligarchyAuctionTick = exports.endOligarchyAuction = exports.handle
 const oligarchyData_1 = require("./oligarchyData");
 const initializeOligarchyGame = (room) => {
     var _a;
+    // Color Palette (Vibrant, distinct)
+    const PLAYER_COLORS = [
+        '#FF3366', // Red/Pink
+        '#33CC33', // Green
+        '#3399FF', // Blue
+        '#FFCC00', // Yellow/Gold
+        '#9933CC', // Purple
+        '#FF9933', // Orange
+        '#00CCCC', // Cyan
+        '#FF66CC', // Hot Pink
+        '#99CC33', // Lime
+        '#6666FF' // Indigo
+    ];
+    // Assign colors to active players
+    const activePlayers = room.players.filter(p => p.role !== 'banker');
+    activePlayers.forEach((p, index) => {
+        p.color = PLAYER_COLORS[index % PLAYER_COLORS.length];
+    });
     room.gameState.oligarchy = {
         players: {},
         companies: {},
         turnPhase: 'rolling',
-        currentTurnPlayerId: '', // Set below
+        currentTurnPlayerId: ((_a = activePlayers[0]) === null || _a === void 0 ? void 0 : _a.id) || '', // Set below
         roundCount: 1,
         activeNewsflash: null,
         transactionLog: [],
@@ -17,9 +35,6 @@ const initializeOligarchyGame = (room) => {
     // Initial News
     addNewsItem(room.gameState.oligarchy, "Market Opens", "The Oligarchy initiates trading. All assets are up for grabs.", "finance");
     console.log(`[OligarchyLogic] Initializing for ${room.players.length} players.`);
-    // Only add active players
-    const activePlayers = room.players.filter(p => p.role !== 'banker');
-    room.gameState.oligarchy.currentTurnPlayerId = ((_a = activePlayers[0]) === null || _a === void 0 ? void 0 : _a.id) || '';
     activePlayers.forEach(p => {
         if (room.gameState.oligarchy) {
             room.gameState.oligarchy.players[p.id] = {
