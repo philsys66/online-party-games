@@ -204,7 +204,7 @@ export const purchaseOligarchyCompany = (room: Room, playerId: string) => {
         player.companies.push(company.id);
     }
 
-    addNewsItem(game, "Acquisition Update", `${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${companyState.currentValue}M.`, "finance");
+    addNewsItem(game, "Acquisition Update", `${room.players.find(p => p.id === playerId)?.name} acquired ${company.name} for $${companyState.currentValue}M.`, company.sector as any);
 
     checkOligarchVictory(room, playerId);
 };
@@ -248,7 +248,9 @@ const triggerNewsflash = (room: Room) => {
         sectors: event.sectors as string[]
     };
 
-    game.transactionLog.unshift(`[NEWSFLASH] ${event.title.toUpperCase()}: ${event.description}`);
+    // Log it
+    const category = event.title.toLowerCase().includes('pandemic') ? 'pandemic' : 'news';
+    addNewsItem(game, "BREAKING NEWS", `${event.title.toUpperCase()}: ${event.description}`, category);
 
     // APPLY ECONOMIC EFFECTS
     const affectedSectors = event.sectors;
