@@ -125,19 +125,18 @@ const GameRoom: React.FC = () => {
 
 
     // Full Screen Overrides:
-    // Oligarchy needs full width/height but uses the standard header now.
-    // We will adjust the container style dynamically.
-    const isFullWidthGame = room.gameType === 'oligarchy';
+    // We removed Oligarchy from here to share the standard floating header layout.
+    const isFullWidthGame = false; // room.gameType === 'oligarchy'; // Disabled to enforce standard layout
 
     return (
         <div
             className={`container column ${isFullWidthGame ? 'full-width-game' : ''}`}
             style={{
-                paddingBottom: isFullWidthGame ? '0' : '100px',
-                paddingTop: isFullWidthGame ? '0' : '80px',
+                paddingBottom: isFullWidthGame ? '0' : '20px', // Reduced padding
+                paddingTop: isFullWidthGame ? '0' : '20px', // Let the header be part of flow, sticky handles it
                 width: isFullWidthGame ? '100vw' : '100%',
                 maxWidth: isFullWidthGame ? 'none' : undefined,
-                height: isFullWidthGame ? '100vh' : 'auto',
+                height: isFullWidthGame ? '100vh' : 'auto', // Let content define height or use calc in board
                 overflow: isFullWidthGame ? 'hidden' : 'visible'
             }}
         >

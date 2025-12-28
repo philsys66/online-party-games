@@ -32,7 +32,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
     // CSS Styles
     const styles = `
         .oligarchy-app {
-            flex: 1;
+            height: calc(100vh - 140px); /* Fit within standard layout (Head + padding) */
+            width: 100%;
             background: #0d1117;
             color: #e6edf3;
             font-family: 'JetBrains Mono', monospace;
@@ -40,6 +41,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             flex-direction: column;
             overflow: hidden;
             box-sizing: border-box;
+            border-radius: 8px; /* Slight rounding to match theme */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         .oligarchy-main-layout {
