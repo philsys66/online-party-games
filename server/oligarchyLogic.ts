@@ -9,7 +9,6 @@ export const initializeOligarchyGame = (room: Room) => {
         currentTurnPlayerId: '', // Set below
         roundCount: 1,
         activeNewsflash: null,
-        activeNewsflash: null,
         transactionLog: [],
         lastActionTime: Date.now()
     };
@@ -75,8 +74,7 @@ export const handleOligarchyRoll = (room: Room, playerId: string) => {
     // Assuming standard Monopoly-style GO bonus for now ($200 like typical?). Let's say $200.
     if (playerState.position < oldPos) {
         playerState.cash += 200;
-        game.transactionLog.unshift(`[CYCLE] ${room.players.find(p => p.id === playerId)?.name} completed a global cycle. Income +$200M.`);
-        if (game.transactionLog.length > 50) game.transactionLog.pop();
+        addNewsItem(game, "Global Cycle Complete", `${room.players.find(p => p.id === playerId)?.name} completed a global cycle. Income +$200M.`, "cycle");
     }
 
     game.turnPhase = 'acting';
@@ -108,7 +106,7 @@ const handleTileArrival = (room: Room, playerId: string) => {
                 // "Subscription fees cannot be collected" or reduced
                 if (game.activeNewsflash.description.includes('cannot be collected')) {
                     rent = 0;
-                    game.transactionLog.unshift(`[NEWS] Fees suspended for ${company.name} due to ${game.activeNewsflash.title}!`);
+                    addNewsItem(game, "Fees Suspended", `Fees suspended for ${company.name} due to ${game.activeNewsflash.title}!`, "news");
                 }
             }
             if (game.activeNewsflash.type === 'crisis' && game.activeNewsflash.sectors.includes(company.sector)) {
@@ -127,7 +125,7 @@ const handleTileArrival = (room: Room, playerId: string) => {
 
             const payerName = room.players.find(p => p.id === playerId)?.name;
             const ownerName = room.players.find(p => p.id === companyState.ownerId)?.name;
-            game.transactionLog.unshift(`[SUB] ${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`);
+            addNewsItem(game, "Subscription Paid", `${payerName} paid $${rent}M fee to ${ownerName} for ${company.name}.`, "rent");
 
             // Emit Rent Alert
             // We need to access IO to emit, but this function is pure logic usually?
