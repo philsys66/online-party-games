@@ -214,15 +214,14 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                         {/* Header: Value & Name */}
                                         <div style={{ fontSize: '0.6rem', color: sectorColor, display: 'flex', justifyContent: 'space-between' }}>
                                             <span>${companyState.currentValue}M</span>
-                                            {owner && <span>👑 {owner.name.substring(0, 3)}</span>}
                                         </div>
                                         <div style={{ fontSize: '0.7rem', fontWeight: 'bold', textAlign: 'center', lineHeight: '1.1' }}>
                                             {company.name}
                                         </div>
 
-                                        {/* Rent Indicator */}
-                                        <div style={{ fontSize: '0.5rem', color: '#8b949e', textAlign: 'center' }}>
-                                            {SECTORS[company.sector].shortName}
+                                        {/* Rent Indicator / Owner Name */}
+                                        <div style={{ fontSize: '0.5rem', color: owner ? sectorColor : '#8b949e', textAlign: 'center', fontWeight: owner ? 'bold' : 'normal' }}>
+                                            {owner ? owner.name.substring(0, 8) : SECTORS[company.sector].shortName}
                                         </div>
 
                                         {/* Player Tokens */}
