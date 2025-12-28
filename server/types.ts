@@ -13,11 +13,12 @@ export interface Room {
 
 export interface Player {
     id: string; // Socket ID
-    userId?: string; // Persistent UUID
+    userId?: string; // Persistent User ID (optional)
     name: string;
-    avatar?: string;
+    avatar: string;
     score: number;
-    role?: 'player' | 'banker';
+    role: 'player' | 'banker'; // For banker/player modes
+    isConnected?: boolean; // Connection status
 }
 
 export interface GameConfig {

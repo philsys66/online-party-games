@@ -229,29 +229,29 @@ io.on('connection', (socket) => {
       socket.join(data.roomCode);
 
       // Initialize Game State for New Player (Mid-Game)
-      if (room.gameStarted) {
+      if (room.gameState.status === 'playing') {
         console.log(`Mid-Game Join: Initializing state for ${newPlayer.name}`);
         if (room.gameState.oligarchy) {
           room.gameState.oligarchy.players[socket.id] = {
             cash: 1500, // Starting cash
-            netWorth: 1500,
             position: 0,
             isBankrupt: false,
-            ownedProperties: []
+            companies: [],
+            isAfk: false
           };
         } else if (room.gameState.monopoly) {
           room.gameState.monopoly.players[socket.id] = {
             position: 0,
-            money: 1500,
+            cash: 1500,
             isBankrupt: false,
             isAfk: false,
             properties: [],
-            jailTurns: 0
+            jailTurns: 0,
+            getOutOfJailCards: 0,
+            colorSets: {}
           };
         }
-      }
-
-      socket.emit('room_joined', room);
+      } socket.emit('room_joined', room);
       io.to(data.roomCode).emit('room_update', room);
       console.log(`${data.playerName} joined room ${data.roomCode} as ${requestedRole}`);
 
