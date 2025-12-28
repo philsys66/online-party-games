@@ -152,7 +152,11 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             .oligarchy-board-container {
                 display: ${mobileTab === 'board' ? 'flex' : 'none'};
                 height: 100%;
-                overflow: hidden;
+                overflow-y: auto; /* Allow scroll if screen is tiny */
+                align-items: flex-start; /* Move board to top */
+                justify-content: center;
+                padding-top: 20px; /* Space from header */
+                padding-bottom: 80px; /* Space for Nav Bar */
             }
             .oligarchy-grid-wrapper {
                 max-width: 100%;
