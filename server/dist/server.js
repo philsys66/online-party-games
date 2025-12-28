@@ -22,6 +22,30 @@ const io = new socket_io_1.Server(server, {
     }
 });
 const rooms = {};
+// Palette for high-contrast, bright/neon colors (No dark colors)
+const BRIGHT_COLORS = [
+    '#FF3366', // Neon Red/Pink
+    '#00FF00', // Lime Green
+    '#3399FF', // Sky Blue
+    '#FFCC00', // Gold/Yellow
+    '#9933CC', // Bright Purple
+    '#FF9933', // Neon Orange
+    '#00CCCC', // Cyan
+    '#FF66CC', // Hot Pink
+    '#CCFF00', // Chartreuse
+    '#6666FF', // Periwinkle
+    '#FF00CC', // Magenta
+    '#00FFCC' // Turquoise
+];
+const assignPlayerColor = (room) => {
+    const usedColors = new Set(room.players.map(p => p.color).filter(Boolean));
+    for (const color of BRIGHT_COLORS) {
+        if (!usedColors.has(color))
+            return color;
+    }
+    // Fallback: Random from palette if all taken
+    return BRIGHT_COLORS[Math.floor(Math.random() * BRIGHT_COLORS.length)];
+};
 const ROOM_CODES = [
     "PARIS", "TOKYO", "MARS", "VENUS", "ZEUS", "HERA", "APOLLO", "ROME", "LIMA", "OSLO",
     "CAIRO", "DELHI", "SEOUL", "DUBAI", "YORK", "LYON", "NICE", "BONN", "BERN", "KIEV",
@@ -100,14 +124,20 @@ io.on('connection', (socket) => {
         rooms[roomCode] = {
             id: roomCode,
             gameType: data.gameType || 'scattergories',
-            players: [{
-                    id: socket.id,
-                    userId: data.userId, // Host Persistent ID
-                    name: data.playerName,
-                    avatar: data.avatar,
-                    score: 0,
-                    role: 'player' // Default role for host
-                }],
+            // Assign Host
+            const: hostPlayer, Player: types_1.Player = {
+                id: socket.id,
+                userId: data.userId,
+                name: data.playerName,
+                avatar: data.avatar,
+                score: 0,
+                role: 'host', // Creator is always host initially
+                isConnected: true,
+                // Assign Color
+                color: assignPlayerColor(newRoom)
+            },
+            newRoom, : .players.push(hostPlayer),
+            rooms, [roomCode]:  = newRoom,
             gameState: gameState,
             gameConfig: {
                 timerDuration: 180,
@@ -180,7 +210,9 @@ io.on('connection', (socket) => {
                 avatar: data.avatar,
                 score: 0,
                 role: requestedRole,
-                isConnected: true
+                isConnected: true,
+                // Assign Color
+                color: assignPlayerColor(room)
             };
             room.players.push(newPlayer);
             socket.join(data.roomCode);

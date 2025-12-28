@@ -19,9 +19,6 @@ const initializeOligarchyGame = (room) => {
     ];
     // Assign colors to active players
     const activePlayers = room.players.filter(p => p.role !== 'banker');
-    activePlayers.forEach((p, index) => {
-        p.color = PLAYER_COLORS[index % PLAYER_COLORS.length];
-    });
     room.gameState.oligarchy = {
         players: {},
         companies: {},

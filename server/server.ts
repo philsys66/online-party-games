@@ -154,24 +154,22 @@ io.on('connection', (socket) => {
       };
     }
 
+    // Assign Host & Color (Random start for host)
+    const hostPlayer: Player = {
+      id: socket.id,
+      userId: data.userId,
+      name: data.playerName,
+      avatar: data.avatar,
+      score: 0,
+      role: 'host',
+      isConnected: true,
+      color: BRIGHT_COLORS[Math.floor(Math.random() * BRIGHT_COLORS.length)]
+    };
+
     rooms[roomCode] = {
       id: roomCode,
       gameType: data.gameType || 'scattergories',
-      // Assign Host
-      const hostPlayer: Player = {
-        id: socket.id,
-        userId: data.userId,
-        name: data.playerName,
-        avatar: data.avatar,
-        score: 0,
-        role: 'host', // Creator is always host initially
-        isConnected: true,
-        // Assign Color
-        color: assignPlayerColor(newRoom)
-      };
-      newRoom.players.push(hostPlayer);
-
-      rooms[roomCode] = newRoom;
+      players: [hostPlayer],
       gameState: gameState,
       gameConfig: {
         timerDuration: 180,
