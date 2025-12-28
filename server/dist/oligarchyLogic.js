@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.endOligarchyAuction = exports.handleOligarchyBid = exports.startOligarchyAuction = exports.endOligarchyTurn = exports.purchaseOligarchyCompany = exports.calculateSubscriptionFee = exports.handleOligarchyRoll = exports.initializeOligarchyGame = void 0;
+exports.checkOligarchyAuctionTick = exports.endOligarchyAuction = exports.handleOligarchyBid = exports.startOligarchyAuction = exports.endOligarchyTurn = exports.purchaseOligarchyCompany = exports.calculateSubscriptionFee = exports.handleOligarchyRoll = exports.initializeOligarchyGame = void 0;
 const oligarchyData_1 = require("./oligarchyData");
 const initializeOligarchyGame = (room) => {
     var _a;
@@ -316,3 +316,13 @@ const endOligarchyAuction = (room) => {
     // Actually if they sold during their turn, they can still act.
 };
 exports.endOligarchyAuction = endOligarchyAuction;
+const checkOligarchyAuctionTick = (room) => {
+    if (!room.gameState.oligarchy || !room.gameState.oligarchy.auction)
+        return;
+    const auction = room.gameState.oligarchy.auction;
+    auction.timeLeft -= 1;
+    if (auction.timeLeft <= 0) {
+        (0, exports.endOligarchyAuction)(room);
+    }
+};
+exports.checkOligarchyAuctionTick = checkOligarchyAuctionTick;

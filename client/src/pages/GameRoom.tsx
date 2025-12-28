@@ -144,15 +144,11 @@ const GameRoom: React.FC = () => {
             <header
                 className="glass-panel column"
                 style={{
-                    position: isFullWidthGame ? 'relative' : 'sticky',
-                    top: isFullWidthGame ? '0' : '10px',
+                    position: 'sticky',
+                    top: '10px',
                     zIndex: 10,
                     padding: '10px 20px',
-                    margin: isFullWidthGame ? '0' : undefined,
-                    borderRadius: isFullWidthGame ? '0' : undefined,
-                    borderLeft: isFullWidthGame ? 'none' : undefined,
-                    borderRight: isFullWidthGame ? 'none' : undefined,
-                    borderTop: isFullWidthGame ? 'none' : undefined,
+                    // Ensure glass panel look is preserved by not forcibly unsetting these
                 }}
             >
                 <GameMenu />
