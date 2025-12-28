@@ -196,8 +196,10 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                 const owner = companyState.ownerId ? room.players.find(p => p.id === companyState.ownerId) : null;
                                 const sectorColor = SECTORS[company.sector].color;
 
-                                // Players on this tile
                                 const playersOnTile = room.players.filter(p => game.players[p.id]?.position === index);
+
+                                // Resolve Colors
+                                const ownerColor = owner?.color || (owner ? stringToColor(owner.name) : undefined);
 
                                 return (
                                     <div key={company.id} style={{
@@ -220,7 +222,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                         </div>
 
                                         {/* Rent Indicator / Owner Name */}
-                                        <div style={{ fontSize: '0.5rem', color: owner ? sectorColor : '#8b949e', textAlign: 'center', fontWeight: owner ? 'bold' : 'normal' }}>
+                                        <div style={{ fontSize: '0.5rem', color: owner ? ownerColor : '#8b949e', textAlign: 'center', fontWeight: owner ? 'bold' : 'normal' }}>
                                             {owner ? owner.name.substring(0, 8) : SECTORS[company.sector].shortName}
                                         </div>
 
@@ -237,7 +239,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                         width: '24px',
                                                         height: '24px',
                                                         borderRadius: '50%',
-                                                        border: `2px solid ${stringToColor(p.name)}`,
+                                                        border: `2px solid ${p.color || stringToColor(p.name)}`,
                                                         boxShadow: '0 0 4px black',
                                                         objectFit: 'cover',
                                                         zIndex: 10
