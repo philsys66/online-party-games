@@ -314,7 +314,9 @@ export const purchaseOligarchyCompany = (room: Room, playerId: string) => {
             participants: room.players.map(p => p.id).filter(id => id !== sellerId) // Everyone else
         };
 
-        game.transactionLog.unshift(`[AUCTION] ${room.players.find(p => p.id === sellerId)?.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`);
+        game.turnPhase = 'auction';
+
+        addNewsItem(game, "Asset Auction", `${room.players.find(p => p.id === sellerId)?.name} is selling ${company.name}! Bidding starts at $${game.auction.currentBid}M.`, "bidding");
     };
 
     export const handleOligarchyBid = (room: Room, playerId: string, bidAmount: number) => {
