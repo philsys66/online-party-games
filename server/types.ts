@@ -123,6 +123,7 @@ export interface GameState {
             description: string;
             type: string;
             sectors: string[]; // Affected sectors
+            expiresAt?: number; // Timestamp for auto-clear
         } | null;
         auction?: {
             companyId: number;

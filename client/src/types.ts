@@ -1,11 +1,14 @@
+import type { Socket } from 'socket.io-client';
+
 export interface Player {
     id: string; // Socket ID (ephemeral)
     userId?: string; // Persistent UUID
     name: string;
-    avatar?: string;
+    avatar: string;
     score: number;
     color?: string; // Assigned game color
-    role?: 'player' | 'banker';
+    role: 'player' | 'banker';
+    isConnected?: boolean;
 }
 
 export type GameType = 'scattergories' | 'crossword' | 'charades' | 'monopoly' | 'oligarchy';
@@ -22,7 +25,7 @@ export interface Cell {
 }
 
 export interface GameState {
-    status: 'lobby' | 'playing' | 'voting' | 'results';
+    status: 'waiting' | 'playing' | 'voting' | 'results';
     timer: number;
     letter: string | null;
     round: number;
@@ -32,6 +35,7 @@ export interface GameState {
     clues?: { across: Record<string, string>, down: Record<string, string> };
     cursors?: Record<string, { row: number, col: number }>; // playerId -> position
     categories?: string[];
+    solution?: string[][];
     // Charades
     actorId?: string;
     currentScene?: string;
@@ -56,7 +60,8 @@ export interface GameState {
             jailTurns: number,
             getOutOfJailCards: number,
             colorSets: Record<string, number>, // group -> count owned
-            isBankrupt: boolean
+            isBankrupt: boolean,
+            isAfk?: boolean
         }>,
         properties: Record<number, {
             ownerId?: string,
@@ -100,7 +105,8 @@ export interface GameState {
         }>;
         turnPhase: 'rolling' | 'acting' | 'auction';
         currentTurnPlayerId: string;
-        activeNewsflash?: { title: string, description: string, type: string, sectors: string[] } | null;
+        roundCount: number;
+        activeNewsflash?: { title: string, description: string, type: string, sectors: string[], expiresAt?: number } | null;
         auction?: {
             companyId: number;
             currentBid: number;
@@ -126,8 +132,9 @@ export interface Room {
     players: Player[];
     gameState: GameState;
     gameConfig: GameConfig;
-    answers?: Record<string, Record<number, string>>;
-    rejections?: Record<string, Record<number, string[]>>; // targetID -> cat -> [voters]
+    answers: Record<string, Record<number, string>>;
+    rejections: Record<string, Record<number, string[]>>; // targetID -> cat -> [voters]
+    votes: Record<string, Record<number, number>>;
 }
 
 export interface GameConfig {
@@ -137,7 +144,7 @@ export interface GameConfig {
 }
 
 export interface GameContextType {
-    socket: any;
+    socket: Socket | null;
     room: Room | null;
     player: Player | null; // Current player info (local)
     setPlayerName: (name: string) => void;

@@ -201,7 +201,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                         {room.gameState.monopoly!.properties[selectedPropertyId].isMortgaged ? (
                             <button
                                 onClick={() => {
-                                    socket.emit('monopoly_unmortgage', { roomCode: room.id, propertyId: selectedPropertyId });
+                                    socket?.emit('monopoly_unmortgage', { roomCode: room.id, propertyId: selectedPropertyId });
                                     setSelectedPropertyId(null);
                                 }}
                                 style={{ padding: '8px', background: '#2ecc71', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
@@ -212,7 +212,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                             <>
                                 <button
                                     onClick={() => {
-                                        socket.emit('monopoly_mortgage', { roomCode: room.id, propertyId: selectedPropertyId });
+                                        socket?.emit('monopoly_mortgage', { roomCode: room.id, propertyId: selectedPropertyId });
                                         setSelectedPropertyId(null);
                                     }}
                                     style={{ padding: '8px', background: '#e74c3c', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
@@ -223,7 +223,7 @@ const PlayerHUD: React.FC<PlayerHUDProps> = ({ isMinimized, onToggleMinimize }) 
                                 {MONOPOLY_BOARD[selectedPropertyId].houseCost && (
                                     <button
                                         onClick={() => {
-                                            socket.emit('monopoly_buy_house', { roomCode: room.id, propertyId: selectedPropertyId });
+                                            socket?.emit('monopoly_buy_house', { roomCode: room.id, propertyId: selectedPropertyId });
                                         }}
                                         style={{ padding: '8px', background: '#3498db', border: 'none', borderRadius: '4px', cursor: 'pointer', color: 'white' }}
                                     >

@@ -95,7 +95,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!uid) {
             // Safer UUID generation (crypto.randomUUID can throw in insecure contexts)
             uid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
             localStorage.setItem('userId', uid);
@@ -114,7 +114,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // And we have a socket connection
         if (socket && isConnected && !room && lastRoomCode && localName) {
             console.log(`Auto-rejoining room ${lastRoomCode} as ${localName}...`);
-            joinRoom(lastRoomCode, localName, localAvatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', lastRole as any);
+            joinRoom(lastRoomCode, localName, localAvatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix', lastRole as 'player' | 'banker');
         }
     }, [socket, isConnected, room]); // Run when socket connects
 
@@ -153,7 +153,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 console.log('Name changed, regenerating UserID for new identity.');
                 // Generate new UUID
                 currentUserId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                     return v.toString(16);
                 });
                 localStorage.setItem('userId', currentUserId);
@@ -235,9 +235,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         (room?.players.find(p => p.id === socket?.id) || {
             id: socket?.id || '',
             name: localName,
-            avatar: localAvatar,
+            avatar: localAvatar || '',
             score: 0,
-            role: 'player' // Default
+            role: 'player' as const
         })
     ) : null;
 

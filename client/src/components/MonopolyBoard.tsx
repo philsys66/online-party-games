@@ -50,13 +50,13 @@ const MonopolyBoard: React.FC = () => {
         // Simulate roll delay then emit
         setTimeout(() => {
             setIsRolling(false);
-            socket.emit('monopoly_roll_dice', room.id);
+            socket?.emit('monopoly_roll_dice', room.id);
         }, 1000);
     };
 
     const renderSpace = (space: BoardSpace) => {
         const pos = getGridPosition(space.id);
-        const playersHere = Object.values(gameState.players || {}).filter(p => p.position === space.id);
+        const playersHereEntries = Object.entries(gameState.players || {}).filter(([_, ps]) => ps.position === space.id);
         const propState = gameState.properties?.[space.id];
 
         let backgroundColor = 'rgba(16, 20, 30, 0.9)'; // Dark glass default
@@ -140,9 +140,7 @@ const MonopolyBoard: React.FC = () => {
                             {/* Ownership/Houses */}
                             {propState?.ownerId && (
                                 <div style={{ marginTop: '2px', fontSize: '0.6rem', color: '#333', fontWeight: 'bold' }}>
-                                    {propState.houses > 0 ? `${'🏠'.repeat(propState.houses)}` : ''}
-                                    {propState.houses === 5 && '🏨'}
-                                    {/* Usually 5 is hotel. We use emojis simple. */}
+                                    {propState.houses === 5 ? '🏨' : propState.houses > 0 ? '🏠'.repeat(propState.houses) : ''}
                                 </div>
                             )}
                         </div>
@@ -163,35 +161,25 @@ const MonopolyBoard: React.FC = () => {
                     gap: '2px',
                     pointerEvents: 'none' // Click through to board
                 }}>
-                    {playersHere.map((p, i) => {
-                        // Find player object to get avatar
-                        const pInfo = room.players.find(rp => rp.id === Object.keys(gameState.players).find(key => gameState.players[key] === p));
-                        const tokenPlayerId = pInfo?.id; // Extract player ID for key and color logic
+                    {playersHereEntries.map(([playerId], i) => {
+                        const pInfo = room.players.find(rp => rp.id === playerId);
 
                         // Color Match Logic: Find index in active players (excluding banker) to match BankerChart colors
                         const activePlayers = room.players.filter(p => p.role !== 'banker');
-                        const colorIdx = activePlayers.findIndex(rp => rp.id === tokenPlayerId);
+                        const colorIdx = activePlayers.findIndex(rp => rp.id === playerId);
 
                         let borderColor = 'white';
                         if (colorIdx !== -1) {
-                            // Standard Player: Match Chart
                             borderColor = PLAYER_COLORS[colorIdx % PLAYER_COLORS.length];
                         } else if (pInfo?.role === 'banker') {
-                            // Banker Fallback Logic
-                            // If "All Bankers" bug is active, activePlayers is empty.
-                            // We use the player's index in the full list to ensure differentiation.
-                            // We offset by activePlayers.length so real bankers (if mixture exists) map to end of list.
-                            const rawIndex = room.players.findIndex(p => p.id === tokenPlayerId);
+                            const rawIndex = room.players.findIndex(p => p.id === playerId);
                             borderColor = PLAYER_COLORS[(activePlayers.length + Math.max(0, rawIndex)) % PLAYER_COLORS.length];
                         }
 
-                        // Debug Log (Temporary)
-                        // console.log(`[AvatarRender] ID: ${tokenPlayerId}, Role: ${pInfo?.role}, ColorIdx: ${colorIdx}, Border: ${borderColor}`);
-
                         return (
                             <motion.img
-                                key={tokenPlayerId || i} // Use tokenPlayerId as key if available, fallback to index
-                                layoutId={`token-${pInfo?.id}`}
+                                key={playerId}
+                                layoutId={`token-${playerId}`}
                                 src={pInfo?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`}
                                 alt={pInfo?.name || 'player token'}
                                 style={{
@@ -199,9 +187,9 @@ const MonopolyBoard: React.FC = () => {
                                     height: '30px',
                                     borderRadius: '50%',
                                     border: `2px solid ${borderColor}`,
-                                    background: 'black', // Dark background for avatar
+                                    background: 'black',
                                     zIndex: 20,
-                                    boxShadow: `0 0 10px ${borderColor}` // Glow effect matches player color
+                                    boxShadow: `0 0 10px ${borderColor}`
                                 }}
                                 title={pInfo?.name}
                             />
@@ -327,7 +315,7 @@ const MonopolyBoard: React.FC = () => {
                                 <button
                                     onClick={() => {
                                         console.log('Close button clicked');
-                                        socket.emit('monopoly_dismiss_card', room.id);
+                                        socket?.emit('monopoly_dismiss_card', room.id);
                                     }}
                                     style={{
                                         position: 'absolute',

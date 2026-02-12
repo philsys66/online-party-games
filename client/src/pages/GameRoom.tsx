@@ -22,7 +22,7 @@ const GameRoom: React.FC = () => {
         if (room?.gameState.status === 'voting' && !hasSubmitted) {
             console.log('Auto-submitting answers:', answers);
             setHasSubmitted(true);
-            socket.emit('submit_answers', { roomCode: room.id, answers });
+            socket?.emit('submit_answers', { roomCode: room.id, answers });
         }
     }, [room?.gameState.status, hasSubmitted, answers, room?.id, socket]);
 
@@ -84,7 +84,7 @@ const GameRoom: React.FC = () => {
         if (room.gameType === 'crossword') return <CrosswordBoard />;
         if (room.gameType === 'charades') return <CharadesBoard />;
         if (room.gameType === 'monopoly') return <MonopolyBoard />;
-        if (room.gameType === 'oligarchy') return <OligarchyBoard room={room} socket={socket} userId={socket.id} />;
+        if (room.gameType === 'oligarchy') return <OligarchyBoard room={room} socket={socket} userId={socket?.id || ''} />;
 
         // Use server categories if available, else default list
         const categories = room.gameState.categories || CATEGORIES_LIST;
@@ -173,7 +173,7 @@ const GameRoom: React.FC = () => {
                         {room.gameType === 'oligarchy' && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <img
-                                    src={room.players.find(p => p.id === socket.id)?.avatar}
+                                    src={room.players.find(p => p.id === socket?.id)?.avatar}
                                     alt="My Avatar"
                                     style={{ width: '50px', height: '50px', borderRadius: '50%', border: '2px solid var(--color-accent)', objectFit: 'cover' }}
                                 />

@@ -260,7 +260,8 @@ const triggerNewsflash = (room: Room) => {
         title: event.title,
         description: event.description,
         type: event.type,
-        sectors: event.sectors as string[]
+        sectors: event.sectors as string[],
+        expiresAt: Date.now() + 8000 // Auto-clear after 8 seconds
     };
 
     // Log it

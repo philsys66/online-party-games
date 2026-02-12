@@ -1,12 +1,15 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OLIGARCHY_BOARD, SECTORS } from '../data/oligarchyData';
+import { stringToColor } from '../utils/colors';
 
 import type { Room } from '../types';
 
+import type { Socket } from 'socket.io-client';
+
 interface OligarchyBoardProps {
     room: Room;
-    socket: any;
+    socket: Socket | null;
     userId: string;
 }
 
@@ -16,8 +19,8 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
         return <div style={{ color: 'white', padding: '20px' }}>Loading Oligarchy State...</div>;
     }
     const game = room.gameState.oligarchy;
-    const playerState = game.players[socket.id];
-    const isMyTurn = game.currentTurnPlayerId === socket.id;
+    const playerState = socket?.id ? game.players[socket.id] : null;
+    const isMyTurn = game.currentTurnPlayerId === socket?.id;
 
     const [activeTab, setActiveTab] = React.useState<'market' | 'assets'>('market');
     const [activeRoll, setActiveRoll] = React.useState<{ die1: number, die2: number, playerId: string } | null>(null);
@@ -50,9 +53,9 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             setTimeout(() => setActiveRoll(null), 3000);
         };
 
-        socket.on('oligarchy_dice_rolled', handleRoll);
+        socket?.on('oligarchy_dice_rolled', handleRoll);
         return () => {
-            socket.off('oligarchy_dice_rolled', handleRoll);
+            socket?.off('oligarchy_dice_rolled', handleRoll);
         };
     }, [socket]);
 
@@ -313,16 +316,16 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                             </div>
 
                                             {/* Bidding Controls */}
-                                            {socket.id !== game.auction.sellerId && (
+                                            {socket?.id !== game.auction.sellerId && (
                                                 <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                     {[1, 5, 10, 50].map(inc => (
                                                         <button
                                                             key={inc}
-                                                            onClick={() => socket.emit('oligarchy_bid', room.id, game.auction!.currentBid + inc)}
-                                                            disabled={playerState.cash < game.auction!.currentBid + inc}
+                                                            onClick={() => socket?.emit('oligarchy_bid', room.id, game.auction!.currentBid + inc)}
+                                                            disabled={!playerState || playerState.cash < game.auction!.currentBid + inc}
                                                             style={{
                                                                 background: '#238636', color: 'white', border: 'none', padding: '10px', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold',
-                                                                opacity: playerState.cash < game.auction!.currentBid + inc ? 0.5 : 1
+                                                                opacity: !playerState || playerState.cash < game.auction!.currentBid + inc ? 0.5 : 1
                                                             }}
                                                         >
                                                             +${inc}M
@@ -330,7 +333,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                     ))}
                                                 </div>
                                             )}
-                                            {socket.id === game.auction.sellerId && (
+                                            {socket?.id === game.auction.sellerId && (
                                                 <div style={{ marginTop: '10px', color: '#8b949e', fontStyle: 'italic' }}>
                                                     You cannot bid on your own auction.
                                                 </div>
@@ -408,7 +411,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                                         {game.turnPhase === 'rolling' && (
                                             <button
-                                                onClick={() => socket.emit('oligarchy_roll', room.id)}
+                                                onClick={() => socket?.emit('oligarchy_roll', room.id)}
                                                 style={btnStyle('#2ecc71')}
                                             >
                                                 EXECUTE MOVEMENT (ROLL)
@@ -419,13 +422,14 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                             <>
                                                 {/* Check if current tile is unowned and buyable */}
                                                 {(() => {
+                                                    if (!playerState) return null;
                                                     const pos = playerState.position;
                                                     const companyState = game.companies[pos];
                                                     const company = OLIGARCHY_BOARD[pos];
                                                     if (!companyState.ownerId && playerState.cash >= companyState.currentValue) {
                                                         return (
                                                             <button
-                                                                onClick={() => socket.emit('oligarchy_buy', room.id)}
+                                                                onClick={() => socket?.emit('oligarchy_buy', room.id)}
                                                                 style={btnStyle('#00d2d3')}
                                                             >
                                                                 ACQUIRE {company.name.toUpperCase()} (${companyState.currentValue}M)
@@ -436,7 +440,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                 })()}
 
                                                 <button
-                                                    onClick={() => socket.emit('oligarchy_end_turn', room.id)}
+                                                    onClick={() => socket?.emit('oligarchy_end_turn', room.id)}
                                                     style={btnStyle('#ff6b6b')}
                                                 >
                                                     END FISCAL PERIOD
@@ -449,17 +453,18 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                         ) : (
                             /* Assets Tab View */
                             <div style={{ flex: 1, overflowY: 'auto' }}>
+                                {playerState ? (<>
                                 <div style={{ marginBottom: '15px', padding: '10px', background: '#161b22', borderRadius: '6px' }}>
                                     <div style={{ color: '#8b949e', fontSize: '0.8rem' }}>NET WORTH</div>
                                     <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-                                        ${playerState.cash + playerState.companies.reduce((sum, id) => sum + game.companies[id].currentValue, 0)}M
+                                        ${playerState.cash + playerState.companies.reduce((sum: number, id: number) => sum + game.companies[id].currentValue, 0)}M
                                     </div>
                                     <div style={{ color: '#2ecc71', fontSize: '0.9rem' }}>CASH: ${playerState.cash}M</div>
                                 </div>
 
                                 <div style={{ marginBottom: '10px', fontWeight: 'bold', color: '#8b949e' }}>PORTFOLIO</div>
                                 {playerState.companies.length === 0 && <div style={{ color: '#8b949e', fontStyle: 'italic' }}>No assets owned.</div>}
-                                {playerState.companies.map(cId => {
+                                {playerState.companies.map((cId: number) => {
                                     const c = OLIGARCHY_BOARD.find(b => b.id === cId)!;
                                     const val = game.companies[cId].currentValue;
                                     return (
@@ -473,7 +478,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                                 <button
                                                     onClick={() => {
                                                         if (game.turnPhase !== 'auction') {
-                                                            socket.emit('oligarchy_start_auction', room.id, c.id);
+                                                            socket?.emit('oligarchy_start_auction', room.id, c.id);
                                                         }
                                                     }}
                                                     disabled={game.turnPhase === 'auction'}
@@ -485,6 +490,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                                         </div>
                                     );
                                 })}
+                                </>) : <div style={{ color: '#8b949e', fontStyle: 'italic' }}>Loading player state...</div>}
                             </div>
                         )}
 
@@ -727,7 +733,7 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
                     </div>
                 )}
                 <AnimatePresence>
-                    {game.activeAlert && game.activeAlert.playerId === socket.id && (
+                    {game.activeAlert && game.activeAlert.playerId === socket?.id && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -771,16 +777,6 @@ export const OligarchyBoard: React.FC<OligarchyBoardProps> = ({ room, socket }) 
             </div >
         </>
     );
-};
-
-// Helper for consistent avatar colors
-const stringToColor = (str: string) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const c = (hash & 0x00ffffff).toString(16).toUpperCase();
-    return '#' + '00000'.substring(0, 6 - c.length) + c;
 };
 
 const btnStyle = (color: string) => ({

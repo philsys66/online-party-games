@@ -61,13 +61,13 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                     {isReceiver ? (
                         <>
                             <button
-                                onClick={() => socket.emit('monopoly_accept_trade', room.id)}
+                                onClick={() => socket?.emit('monopoly_accept_trade', room.id)}
                                 style={{ background: '#2ecc71', border: 'none', padding: '10px 20px', borderRadius: '5px', color: 'white', cursor: 'pointer' }}
                             >
                                 Accept
                             </button>
                             <button
-                                onClick={() => socket.emit('monopoly_reject_trade', room.id)}
+                                onClick={() => socket?.emit('monopoly_reject_trade', room.id)}
                                 style={{ background: '#e74c3c', border: 'none', padding: '10px 20px', borderRadius: '5px', color: 'white', cursor: 'pointer' }}
                             >
                                 Reject
@@ -75,7 +75,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                         </>
                     ) : (
                         <button
-                            onClick={() => socket.emit('monopoly_reject_trade', room.id)} // Rejecting as proposer = cancel
+                            onClick={() => socket?.emit('monopoly_reject_trade', room.id)} // Rejecting as proposer = cancel
                             style={{ background: '#e74c3c', border: 'none', padding: '10px 20px', borderRadius: '5px', color: 'white', cursor: 'pointer' }}
                         >
                             Cancel Offer
@@ -91,7 +91,7 @@ const TradeInterface: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
     const handleCreateOffer = () => {
         if (!targetPlayerId) return;
-        socket.emit('monopoly_create_trade', {
+        socket?.emit('monopoly_create_trade', {
             roomCode: room.id,
             receiverId: targetPlayerId,
             offer: { cash: offerCash, properties: offerProps },

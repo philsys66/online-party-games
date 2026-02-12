@@ -461,7 +461,20 @@ export const buyHouse = (room: Room, playerId: string, propertyId: number) => {
 };
 
 export const sellHouse = (room: Room, playerId: string, propertyId: number) => {
-    // TODO: Implement selling for half price
+    if (!room.gameState.monopoly) return;
+    const game = room.gameState.monopoly;
+    const prop = game.properties[propertyId];
+    const player = game.players[playerId];
+    const space = MONOPOLY_BOARD[propertyId];
+
+    if (!prop || !player || !space) return;
+    if (prop.ownerId !== playerId) return;
+    if (prop.houses <= 0) return;
+    if (!space.houseCost) return;
+
+    prop.houses--;
+    player.cash += Math.floor(space.houseCost / 2);
+    game.transactionLog.push(`${room.players.find(p => p.id === playerId)?.name} sold a house on ${space.name} for $${Math.floor(space.houseCost / 2)}M`);
 };
 
 // Trading Logic

@@ -55,7 +55,7 @@ const ActionPanel: React.FC = () => {
                 <div style={{ marginBottom: '15px' }}>
                     <p style={{ color: '#666' }}>Price: ${currentSpace.price}M</p>
                     <button
-                        onClick={() => socket.emit('monopoly_buy_property', room.id)}
+                        onClick={() => socket?.emit('monopoly_buy_property', room.id)}
                         style={{
                             background: '#2ecc71',
                             color: 'white',
@@ -88,7 +88,7 @@ const ActionPanel: React.FC = () => {
 
             <div style={{ marginTop: '10px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
                 <button
-                    onClick={() => socket.emit('monopoly_end_turn', room.id)}
+                    onClick={() => socket?.emit('monopoly_end_turn', room.id)}
                     style={{
                         background: '#e74c3c',
                         color: 'white',

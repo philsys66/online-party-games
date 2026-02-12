@@ -26,12 +26,12 @@ const CrosswordBoard: React.FC = () => {
         if (grid[r][c].isBlack) return; // Simple skip
 
         setActiveCell({ r, c });
-        socket.emit('cursor_move', { roomCode: room?.id, r, c });
+        socket?.emit('cursor_move', { roomCode: room?.id, r, c });
     };
 
     const updateCell = (r: number, c: number, value: string) => {
         if (room) {
-            socket.emit('update_cell', { roomCode: room.id, r, c, value });
+            socket?.emit('update_cell', { roomCode: room.id, r, c, value });
         }
     };
 
@@ -44,7 +44,7 @@ const CrosswordBoard: React.FC = () => {
             setDirection(prev => prev === 'across' ? 'down' : 'across');
         } else {
             setActiveCell({ r, c });
-            socket.emit('cursor_move', { roomCode: room?.id, r, c });
+            socket?.emit('cursor_move', { roomCode: room?.id, r, c });
         }
         inputRef.current?.focus({ preventScroll: true });
     };
