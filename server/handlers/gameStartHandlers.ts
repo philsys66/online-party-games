@@ -6,6 +6,7 @@ import { startMonopolyGameLoop } from './monopolyHandlers';
 import { startOligarchyGameLoop } from './oligarchyHandlers';
 import { startCharadesRound } from './charadesHandlers';
 import { startRound } from './scattergoriesHandlers';
+import { notifyGameStarted } from '../email';
 
 export function registerGameStartHandlers(socket: Socket, io: Server) {
 
@@ -17,6 +18,10 @@ export function registerGameStartHandlers(socket: Socket, io: Server) {
             room.gameState.status = 'playing';
             room.gameState.round = 1;
             room.players.forEach(p => p.score = 0);
+
+            // Send email notification (fire and forget)
+            const hostName = room.players[0]?.name || 'Unknown';
+            notifyGameStarted(room.gameType, room.players.length, roomCode, hostName);
 
             if (room.gameType === 'crossword') {
                 io.to(roomCode).emit('game_started', room);

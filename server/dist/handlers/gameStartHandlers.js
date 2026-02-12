@@ -8,8 +8,10 @@ const monopolyHandlers_1 = require("./monopolyHandlers");
 const oligarchyHandlers_1 = require("./oligarchyHandlers");
 const charadesHandlers_1 = require("./charadesHandlers");
 const scattergoriesHandlers_1 = require("./scattergoriesHandlers");
+const email_1 = require("../email");
 function registerGameStartHandlers(socket, io) {
     socket.on('start_game', (roomCode) => {
+        var _a;
         console.log(`[DEBUG] Received start_game request for room: ${roomCode} from socket ${socket.id}`);
         const room = timerRegistry_1.rooms[roomCode];
         if (room) {
@@ -17,6 +19,9 @@ function registerGameStartHandlers(socket, io) {
             room.gameState.status = 'playing';
             room.gameState.round = 1;
             room.players.forEach(p => p.score = 0);
+            // Send email notification (fire and forget)
+            const hostName = ((_a = room.players[0]) === null || _a === void 0 ? void 0 : _a.name) || 'Unknown';
+            (0, email_1.notifyGameStarted)(room.gameType, room.players.length, roomCode, hostName);
             if (room.gameType === 'crossword') {
                 io.to(roomCode).emit('game_started', room);
             }
