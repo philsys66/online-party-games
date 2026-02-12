@@ -1,5 +1,6 @@
 import express from 'express';
 import http from 'http';
+import path from 'path';
 import { Server } from 'socket.io';
 import cors from 'cors';
 
@@ -14,10 +15,14 @@ import { registerOligarchyHandlers } from './handlers/oligarchyHandlers';
 const app = express();
 app.use(cors());
 
+// Serve client static files in production
+const clientPath = path.join(__dirname, '..', '..', 'client', 'dist');
+app.use(express.static(clientPath));
+
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "*", // In production, restrict this to client URL
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
@@ -32,6 +37,11 @@ io.on('connection', (socket) => {
     registerCharadesHandlers(socket, io);
     registerMonopolyHandlers(socket, io);
     registerOligarchyHandlers(socket, io);
+});
+
+// SPA catch-all: serve index.html for any non-API/non-socket route
+app.get('*', (_req, res) => {
+    res.sendFile(path.join(clientPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3001;

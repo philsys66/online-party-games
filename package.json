@@ -1,0 +1,11 @@
+{
+  "name": "aytons-arcade",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build && cd ../server && npm run build",
+    "start": "cd server && npm start",
+    "dev": "cd server && npm run dev"
+  }
+}
