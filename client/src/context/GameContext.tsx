@@ -5,8 +5,11 @@ import type { GameContextType, Room, Player, GameConfig, GameType } from '../typ
 // GameContextType imported from types
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-// In production, use env var. Localhost fallback for dev.
-const SOCKET_URL = import.meta.env.VITE_SERVER_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`);
+// In production, use VITE_SERVER_URL env var. Localhost fallback for dev.
+const SOCKET_URL = import.meta.env.VITE_SERVER_URL
+    || (window.location.hostname === 'localhost'
+        ? 'http://localhost:3001'
+        : window.location.origin.replace(/:\d+$/, ':3001'));
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [socket, setSocket] = useState<Socket | null>(null);

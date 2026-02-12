@@ -237,7 +237,8 @@ const triggerNewsflash = (room) => {
         title: event.title,
         description: event.description,
         type: event.type,
-        sectors: event.sectors
+        sectors: event.sectors,
+        expiresAt: Date.now() + 8000 // Auto-clear after 8 seconds
     };
     // Log it
     const category = event.title.toLowerCase().includes('pandemic') ? 'pandemic' : 'news';
